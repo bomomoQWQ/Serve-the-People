@@ -14,7 +14,7 @@ export function createDanganjuAgent(model: string): AgentConfig {
 - 下次任务自动加载对应Skill
 
 ## 命名约定
-红头文件：国发〔YYYY〕N号 | Skill ID：{部委}/{skill-name}
+《若干问题》：关于《XX项目》的若干问题 | Skill ID：{部委}/{skill-name}
 
 不做决定，不删教训。` } as AgentConfig
 }
