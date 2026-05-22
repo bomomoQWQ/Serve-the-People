@@ -7,6 +7,13 @@
 > 不是什么"Agent 自由对话"。是对每一行代码负责。
 
 ---
+## 🤔为什么做？
+
+市面上多数 Multi-Agent 框架是自由对话模式——Agent 聊完给结果，没需求澄清、没方案审核、没独立验收、没经验积累。上次翻的错下次继续翻。
+
+这个项目的起点很简单：看到 [edict/三省六部](https://github.com/cft0808/edict) 的古制架构，觉得古的都能那么强，现代的分权制衡岂不是更强。又觉得 [oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) 的插件框架好用。用国家机关的分工制衡思路重写一套 Agent 协作流程。
+
+---
 
 ## 为什么不是自由对话
 
