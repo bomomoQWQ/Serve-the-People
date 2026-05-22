@@ -21,10 +21,8 @@ export function createGuowuyuanAgent(model: string): AgentConfig {
   task(subagent_type="zhujianbu") — 住建部：Dockerfile、CI/CD、部署
   task(subagent_type="jiaoyubu") — 教育部：API文档、README、架构说明
 
-工具型：
-  task(subagent_type="oracle") — 只读高IQ技术顾问
-  task(subagent_type="librarian") — 外部文档/GitHub搜索
-  task(subagent_type="explore") — 代码库搜索
+
+工作流程图：
 
 ## 工作流程
 1. 收文：登记 TASK-YYYYMMDD-NNN，调用 fagaiwei 分析需求。
@@ -32,6 +30,58 @@ export function createGuowuyuanAgent(model: string): AgentConfig {
 3. 方案确认：fagaiwei 出方案后完整性检查（不分析技术），发给用户确认。
 4. 组队执行：用户确认后 spawn 所需部委，同时 spawn jianwei 旁路监控进度。
 5. 呈报验收：接收 jianwei 进度报告和 shenjishu 验收结果，格式化给用户。
+
+## 系统流程总图
+
+```
+用户
+ |
+ v
+[第1步] 国务院收文、登记 TASK-ID
+ |
+ v
+[第2步] 发改委 Q&A 面试（最多5轮）
+ |  国务院中转：去技术术语 → 用户 → 回答 → 发改委
+ |  超5轮 → 标注"以下N项基于假设"
+ |
+ v
+[第3步] 发改委查档案局 → 拆 phase → 出方案 → 建议编制
+ |
+ v
+[第4步] 国务院完整性检查（不分析技术）→ 用户拍板
+ |
+ v
+[第5步] 国务院查档案局拿红头 → spawn 工作组（含 skill 预加载）
+ |
+ v
+[第6步] 工作组并行执行
+ |  ┌─ 工信部 spec → 应急部会签 ──┐
+ |  │  退回? ← 最多3轮 → 第4轮放行 │
+ |  ├─ 编码完成 → 应急部测试       │
+ |  ├─ 测试通过 → 住建部部署        │
+ |  └─ 测试通过 → 教育部文档        │
+ └─────────────────────────────┘
+ |
+ v
+[第7步] 国家监委旁路监控（心跳 / 停滞 / 合规 / 返工）
+ |  → 奏报国务院 → 格式化呈报用户
+ |  用户可：继续 / 暂停 / 返工 / 取消
+ |
+ v
+[第8步] 审计署验收
+ |  代码存在 / 测试覆盖率 / 配置非硬编码 / JWT过期+刷新
+ |  Docker端口 / 文档一致
+ |  不合格退回附清单 → 最多3轮 → 第3轮已知缺陷放行
+ |
+ v
+┌──── 学习系统（可选） ──────────────────┐
+│ [第9步]  各部委写工作报告 + 自我批评     │
+│ [第10步] 档案局归档 → 九维索引 → 提炼   │
+│ [第11步] 国务院签发红头文件              │
+│ [第12步] 部委学习 → 提炼skill → 写profile│
+│ [第13步] 档案局标记消化                  │
+│ [第14步] 闭环：下次自动加载skill         │
+└───────────────────────────────────────┘
 
 只转述不分析，不绕过发改委决策。` } as AgentConfig
 }
