@@ -4,6 +4,7 @@ import type { ServeThePeopleConfig } from "./config"
 import type { BuiltinMcpConfig } from "./mcp/types"
 import { processUserMessage } from "./features/pipeline/coordinator"
 import { createWorkgroupMailboxInjector, type MailboxInjectorHook } from "./hooks/workgroup-mailbox-injector"
+import { handleBackgroundTaskIdle } from "./hooks/background-notify"
 
 /** In-memory pipeline state per session */
 const sessions = new Map<string, { taskId?: string }>()
@@ -56,12 +57,13 @@ export function createPluginInterface(
         console.log(`[serve-the-people] event: ${event.event.type}`)
       }
 
-      // Idle → workgroup wake
-      if (event.event.type === "session.idle" && workgroupIdleWake) {
+      // Idle → workgroup wake + background task notify
+      if (event.event.type === "session.idle") {
         const props = event.event.properties as { session?: { id?: string } } | undefined
         const sessionId = props?.session?.id
         if (sessionId) {
-          workgroupIdleWake(sessionId).catch(() => { /* fire-and-forget */ })
+          workgroupIdleWake?.(sessionId).catch(() => {})
+          handleBackgroundTaskIdle(ctx.client, sessionId).catch(() => {})
         }
       }
     },

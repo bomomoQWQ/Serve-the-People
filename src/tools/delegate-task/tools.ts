@@ -2,6 +2,7 @@ import { tool, type ToolDefinition } from "@opencode-ai/plugin/tool"
 import type { PluginInput } from "@opencode-ai/plugin"
 import { agentSources } from "../../agents/builtin/registry"
 import { TaskManager } from "./task-manager"
+import { registerBackgroundTask } from "../../hooks/background-notify"
 
 /**
  * Create the delegate-task tools.
@@ -49,8 +50,13 @@ export function createDelegateTask(ctx: PluginInput): Record<string, ToolDefinit
       }
 
       if (runInBackground) {
-        // Fire-and-forget: return task ID immediately, collect via stp_background_output
-        return `Task dispatched: ${task.sessionId}\nAgent: ${agent}\nUse stp_background_output(task_id="${task.sessionId}") to collect results.`
+        // Fire-and-forget: register for notification, return task ID immediately
+        registerBackgroundTask({
+          sessionId: task.sessionId,
+          parentSessionId,
+          agent,
+        })
+        return `Task dispatched: ${task.sessionId}\nAgent: ${agent}\nWait for <system-reminder> notification then use stp_background_output(task_id="${task.sessionId}") to collect results.`
       }
 
       // Sync mode: poll for completion
