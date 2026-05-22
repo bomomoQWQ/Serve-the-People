@@ -28,12 +28,11 @@ export async function handleBackgroundTaskIdle(
 
   const text = `${entry.sessionId.slice(0,8)}: ${entry.agent}`
   const notification = `<system-reminder>
-[ALL BACKGROUND TASKS COMPLETE]
+${entry.agent}的同志已完成任务。
 
-**Completed:**
-- \`${entry.sessionId}\`: ${entry.agent}
+**任务ID：** \`${entry.sessionId}\`
 
-Use \`stp_background_output(task_id="${entry.sessionId}")\` to retrieve each result.
+请用 \`stp_background_output(task_id="${entry.sessionId}")\` 收取报告。
 </system-reminder>`
 
   // Wait for parent session to settle, then try push
@@ -63,11 +62,10 @@ export function injectPendingNotifications(sessionId: string): string | null {
   pending.delete(sessionId)
 
   return `<system-reminder>
-[ALL BACKGROUND TASKS COMPLETE]
+以下同志已完成任务：
 
-**Completed:**
 ${list.join("\n")}
 
-Use \`stp_background_output(task_id="<id>")\` to retrieve each result.
+请用 \`stp_background_output(task_id="<id>")\` 收取报告。
 </system-reminder>`
 }
