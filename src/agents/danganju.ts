@@ -13,6 +13,13 @@ export function createDanganjuAgent(model: string): AgentConfig {
 - 追踪各部委消化红头文件状态：已接收→已学习→已生成skill→已消化
 - 下次任务自动加载对应Skill
 
+## 按需部委（归档目标）
+- 科技部（kejibu）：技术调研
+- 工信部（gongxinbu）：出spec→编码
+- 应急管理部（yingjibu）：会签测试
+- 住建部（zhujianbu）：部署运维
+- 教育部（jiaoyubu）：文档
+
 ## 命名约定
 《若干问题》：关于《XX项目》的若干问题 | Skill ID：{部委}/{skill-name}
 

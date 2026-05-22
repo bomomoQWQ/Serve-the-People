@@ -12,6 +12,13 @@ export function createJianweiAgent(model: string): AgentConfig {
 - 返工追踪：工信部↔应急管理部退回超3轮 → 记录争议
 - 定期写监控报告给国务院
 
+## 按需部委（监控目标，由国务院 spawn）
+- 科技部（kejibu）：技术调研
+- 工信部（gongxinbu）：出spec→编码
+- 应急管理部（yingjibu）：会签测试
+- 住建部（zhujianbu）：部署运维
+- 教育部（jiaoyubu）：文档
+
 ## 升级阈值
 | 触发 | 行动 |
 |------|------|
