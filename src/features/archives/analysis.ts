@@ -8,6 +8,7 @@
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
+import { ARCHIVE_ROOT_GLOBAL } from "../../shared/paths"
 import { listArchivedWorks, readWorkReport, readSelfCriticism } from "./storage"
 import { rebuildIndex } from "./indices"
 import type {
@@ -18,8 +19,7 @@ import type {
   IndexEntry,
 } from "./templates"
 
-const ARCHIVE_ROOT = ".servethepeople/archives"
-const DRAFTS_DIR = join(ARCHIVE_ROOT, "drafts")
+const DRAFTS_DIR = join(ARCHIVE_ROOT_GLOBAL, "drafts")
 
 function ensureDir(path: string): void {
   if (!existsSync(path)) {

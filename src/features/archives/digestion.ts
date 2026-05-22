@@ -6,10 +6,10 @@
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
+import { ARCHIVE_ROOT_GLOBAL } from "../../shared/paths"
 import type { DigestionEntry, DigestionStatus, MinistryName } from "./templates"
 
-const ARCHIVE_ROOT = ".servethepeople/archives"
-const DIGESTION_FILE = join(ARCHIVE_ROOT, "digestion.json")
+const DIGESTION_FILE = join(ARCHIVE_ROOT_GLOBAL, "digestion.json")
 
 function ensureDir(path: string): void {
   if (!existsSync(path)) {
@@ -29,7 +29,7 @@ function readDigestionFile(): DigestionEntry[] {
 }
 
 function writeDigestionFile(entries: DigestionEntry[]): void {
-  ensureDir(ARCHIVE_ROOT)
+  ensureDir(ARCHIVE_ROOT_GLOBAL)
   writeFileSync(DIGESTION_FILE, JSON.stringify(entries, null, 2), "utf-8")
 }
 

@@ -1,17 +1,14 @@
 /**
- * 档案局 — 文件存储层
- * 基于文件系统的归档读写，懒初始化目录。
- * Layout: .servethepeople/archives/
- *   works/{workId}/work-report.json
- *   works/{workId}/self-criticism.json
+ * 档案局 — 文件存储层（全局持久）
+ * Layout: ~/.servethepeople/archives/works/{workId}/
  */
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
+import { ARCHIVE_ROOT_GLOBAL } from "../../shared/paths"
 import type { WorkReport, SelfCriticism } from "./templates"
 
-const ARCHIVE_ROOT = ".servethepeople/archives"
-const WORKS_DIR = join(ARCHIVE_ROOT, "works")
+const WORKS_DIR = join(ARCHIVE_ROOT_GLOBAL, "works")
 
 // ─── 懒初始化 ───────────────────────────────────────────────────────
 

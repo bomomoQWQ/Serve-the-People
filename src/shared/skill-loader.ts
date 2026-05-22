@@ -1,12 +1,16 @@
 /**
  * Simple skill loader for Serve the People plugin.
  *
- * Scans .servethepeople/skills/ directory for SKILL.md files with
- * YAML frontmatter. Caches loaded skills in memory.
+ * Scans two directories for SKILL.md files with YAML frontmatter:
+ *   1. Global: ~/.servethepeople/skills/ — persists across projects
+ *   2. Project: .servethepeople/skills/ — project-specific overrides
+ * Project-level skills take priority over global ones with the same name.
+ * Caches loaded skills in memory.
  */
 
 import { readdirSync, readFileSync, existsSync, statSync } from "node:fs"
 import { join } from "node:path"
+import { SKILLS_ROOT_GLOBAL, projectSkillsRoot } from "./paths"
 
 export interface Skill {
   name: string
@@ -135,19 +139,28 @@ function parseSimpleYaml(yaml: string): Record<string, unknown> {
 let skillCache: Skill[] | null = null
 
 /**
- * Scan the skill directories for SKILL.md files.
- * Searches project-level: .servethepeople/skills/
+ * Scan skill directories for SKILL.md files.
+ * Searches global (~/.servethepeople/skills/) first, then project-level.
+ * Project-level skills with the same name override global ones.
  */
 export function loadSkills(workspaceRoot: string): Skill[] {
   if (skillCache) return skillCache
 
-  const skills: Skill[] = []
-  const skillsDir = join(workspaceRoot, ".servethepeople", "skills")
+  const skillsMap = new Map<string, Skill>()
 
-  if (!existsSync(skillsDir)) {
-    skillCache = skills
-    return skills
-  }
+  // 1. Load global skills first
+  scanDir(SKILLS_ROOT_GLOBAL, skillsMap)
+
+  // 2. Load project-level skills (override same-name)
+  scanDir(projectSkillsRoot(workspaceRoot), skillsMap)
+
+  const skills = Array.from(skillsMap.values())
+  skillCache = skills
+  return skills
+}
+
+function scanDir(skillsDir: string, skillsMap: Map<string, Skill>): void {
+  if (!existsSync(skillsDir)) return
 
   try {
     const entries = readdirSync(skillsDir)
@@ -170,7 +183,8 @@ export function loadSkills(workspaceRoot: string): Skill[] {
         const rules = parseSkillArray(data.rules)
         const source = data.source as string | undefined
 
-        skills.push({
+        // Project-level overrides global
+        skillsMap.set(name.toLowerCase(), {
           name,
           description,
           triggers,
@@ -185,9 +199,6 @@ export function loadSkills(workspaceRoot: string): Skill[] {
   } catch {
     // Directory might not be readable
   }
-
-  skillCache = skills
-  return skills
 }
 
 function parseSkillArray(value: unknown): string[] {

@@ -2,3 +2,12 @@ node_modules/
 dist/
 .env
 *.log
+
+# Serve the People — ephemeral project-level data
+.servethepeople/teams/
+
+# Archive drafts (transient, cleaned after issuance)
+.servethepeople/archives/drafts/
+
+# Keep: .servethepeople/skills/ and .servethepeople/archives/ (index, digestion, works)
+# These are project overrides for global ~/.servethepeople/ — git-track them.

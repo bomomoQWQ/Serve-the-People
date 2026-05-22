@@ -11,11 +11,11 @@
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
+import { ARCHIVE_ROOT_GLOBAL } from "../../shared/paths"
 import { readWorkReport, readSelfCriticism, listArchivedWorks } from "./storage"
 import type { IndexEntry, IndexQuery, SelfCriticism, WorkReport, RedHeadDocument } from "./templates"
 
-const ARCHIVE_ROOT = ".servethepeople/archives"
-const INDICES_DIR = join(ARCHIVE_ROOT, "indices")
+const INDICES_DIR = join(ARCHIVE_ROOT_GLOBAL, "indices")
 const INDEX_FILE = join(INDICES_DIR, "index.json")
 
 function ensureDir(path: string): void {
