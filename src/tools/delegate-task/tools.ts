@@ -37,6 +37,7 @@ export function createDelegateTask(ctx: PluginInput): Record<string, ToolDefinit
 
       const ctx = context as Record<string, unknown>
       const parentSessionId = (ctx.sessionID ?? ctx.session_id ?? "") as string
+      const parentAgent = (ctx.agent ?? ctx.agentID ?? ctx.agent_id ?? "guowuyuan") as string
 
       const task = await manager.launch({
         agent,
@@ -44,7 +45,7 @@ export function createDelegateTask(ctx: PluginInput): Record<string, ToolDefinit
         description: args.description as string | undefined,
         parentSessionId,
         onSessionCreated: runInBackground
-          ? (sid) => registerBackgroundTask({ sessionId: sid, parentSessionId, agent })
+          ? (sid) => registerBackgroundTask({ sessionId: sid, parentSessionId, parentAgent, agent })
           : undefined,
       })
 

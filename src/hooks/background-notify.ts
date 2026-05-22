@@ -7,6 +7,7 @@ import type { PluginInput } from "@opencode-ai/plugin"
 interface BackgroundEntry {
   sessionId: string
   parentSessionId: string
+  parentAgent: string
   agent: string
 }
 
@@ -43,7 +44,7 @@ ${entry.agent}的同志已完成任务。
     if (api.promptAsync) {
       await api.promptAsync({
         path: { id: entry.parentSessionId },
-        body: { parts: [{ type: "text", text: notification }] },
+        body: { agent: entry.parentAgent, parts: [{ type: "text", text: notification }] },
       })
       return
     }
