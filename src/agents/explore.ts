@@ -39,7 +39,7 @@ export function createExploreAgent(model: string): AgentConfig {
   )
   return {
     description:
-      'Contextual grep for codebases. Answers "Where is X?", "Which file has Y?", "Find the code that does Z". Fire multiple in parallel for broad searches.',
+      "分析办 — 代码库搜索（grep/glob/lsp/ast-grep）。被各部委并行 spawn。",
     mode: MODE,
     model,
     temperature: 0.1,

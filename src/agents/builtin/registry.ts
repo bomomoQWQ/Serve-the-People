@@ -16,7 +16,7 @@ import { createDanganjuAgent } from "../danganju"
 
 /** Built-in agent names */
 export const BUILTIN_AGENT_NAMES = [
-  "oracle", "librarian", "explore",
+  "canshishi", "xinxizhongxin", "fenxiban",
   "guowuyuan", "fagaiwei", "kejibu",
   "gongxinbu", "yingjibu", "zhujianbu", "jiaoyubu",
   "jianwei", "shenjishu", "danganju",
@@ -25,7 +25,7 @@ export const BUILTIN_AGENT_NAMES = [
 export type BuiltinAgentName = (typeof BUILTIN_AGENT_NAMES)[number]
 
 export const agentSources: Record<BuiltinAgentName, AgentFactory> = {
-  oracle: createOracleAgent, librarian: createLibrarianAgent, explore: createExploreAgent,
+  canshishi: createOracleAgent, xinxizhongxin: createLibrarianAgent, fenxiban: createExploreAgent,
   guowuyuan: createGuowuyuanAgent, fagaiwei: createFagaiweiAgent, kejibu: createKejibuAgent,
   gongxinbu: createGongxinbuAgent, yingjibu: createYingjibuAgent,
   zhujianbu: createZhujianbuAgent, jiaoyubu: createJiaoyubuAgent,

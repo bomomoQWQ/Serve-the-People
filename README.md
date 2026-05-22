@@ -87,7 +87,7 @@ cd Serve-the-People && bash install.sh    # Unix
 
 ### 基础工具
 
-**oracle** 只读顾问 · **librarian** 外部搜索 · **explore** 代码搜索
+**canshishi** 参事室 · **xinxizhongxin** 信息中心 · **fenxiban** 分析办
 
 ---
 

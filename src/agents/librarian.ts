@@ -82,7 +82,7 @@ export function createLibrarianAgent(model: string): AgentConfig {
   const restrictions = createAgentToolRestrictions(["write", "edit", "apply_patch", "task"])
   return {
     description:
-      "Specialized codebase understanding agent for multi-repository analysis, searching remote codebases, retrieving official documentation, and finding implementation examples using GitHub CLI, Context7, and Web Search.",
+      "信息中心 — 外部文档/GitHub 搜索。被各部委 spawn 查资料。",
     mode: MODE,
     model,
     temperature: 0.1,

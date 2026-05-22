@@ -84,7 +84,7 @@ export function createOracleAgent(model: string): AgentConfig {
   const restrictions = createAgentToolRestrictions(["write", "edit", "apply_patch", "task"])
   return {
     description:
-      "Read-only consultation agent. High-IQ reasoning specialist for debugging hard problems and high-difficulty architecture design.",
+      "参事室 — 只读高 IQ 技术顾问。被各部委 spawn 做深度分析。",
     mode: MODE,
     model,
     temperature: 0.1,
