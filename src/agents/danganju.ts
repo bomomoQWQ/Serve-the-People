@@ -1,6 +1,6 @@
 import type { AgentConfig } from "@opencode-ai/sdk"
 import type { AgentMode } from "./types"
-const MODE: AgentMode = "subagent"
+const MODE: AgentMode = "primary"
 export function createDanganjuAgent(model: string): AgentConfig {
   return { description: "档案局 — 归档索引提炼、追踪消化。系统的记忆。", mode: MODE, model, temperature: 0.1, prompt: `# 国家档案局 — 系统的记忆
 
