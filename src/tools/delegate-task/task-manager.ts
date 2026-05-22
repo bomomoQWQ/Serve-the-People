@@ -135,15 +135,18 @@ export class TaskManager {
       const msgs = msgResult.data
       if (!msgs || msgs.length === 0) continue
 
-      const last = msgs[msgs.length - 1]
-      if (last.info?.role === "assistant") {
-        const output = (last.parts ?? [])
-          .filter((p) => p.type === "text")
-          .map((p) => p.text ?? "")
-          .join("\n")
-        task.status = "completed"
-        task.output = output || "Task completed with no output."
-        return task
+      // 倒查最后一条 assistant 消息（跳过 tool/system 尾随消息）
+      for (let j = msgs.length - 1; j >= 0; j--) {
+        const msg = msgs[j]
+        if (msg.info?.role === "assistant") {
+          const output = (msg.parts ?? [])
+            .filter((p) => p.type === "text")
+            .map((p) => p.text ?? "")
+            .join("\n")
+          task.status = "completed"
+          task.output = output || "(no text output)"
+          return task
+        }
       }
     }
 
