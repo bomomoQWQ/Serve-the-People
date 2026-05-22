@@ -1,6 +1,50 @@
 # 为人民服务 · Serve the People
 
-> 13 Agent × 14 步流水线。需求澄清 → 方案会签 → 并行执行 → 独立验收 → 经验归档。
+> 13 Agent × 14 步流水线。把"随口一说"变成"按流程办事"。
+
+---
+
+## 你说了算还是 AI 说了算？
+
+普通 Multi-Agent 是这样的：
+
+```
+用户：写个后台管理系统
+
+Agent：好的！（直接开写）
+       （3 小时后）
+Agent：搞完了。顺便把数据库也重构了，
+       认证换成了 oauth2，
+       前端改成了 react 19...
+用户：？？？
+```
+
+为人民服务是这样的：
+
+```
+用户：写个后台管理系统
+
+国务院：收到。转发发改委评估。
+发改委：先别急。系统给谁用的？
+        要支持多少并发？
+        已有的技术栈是什么？
+用户：哦对，给运营团队，200 人，已有的 vue3 + go。
+
+国务院 → 发改委：清楚了吗？
+发改委：清楚了。方案：工信部写 spec → 应急部会签 →
+        编码 → 党建部测试 → 住建部部署 →
+        教育部写文档。5 个部委并行，预计 2 天。
+用户：行。
+国务院：批准。工作组组建，开始执行。
+        (2 天后)
+审计署：验收完毕。所有端点功能正常，
+        README 安装流程跑通，异常输入不崩溃。
+        合格 ✅
+```
+
+**区别**：不猜。问清楚再动手。做完有人验收。踩坑了记下来下次不踩。
+
+---
 
 ## 流程总览
 
@@ -50,16 +94,65 @@ graph TD
 
 ---
 
-## 为什么不用自由对话
+## 13 个 Agent 各司其职
 
-市面多数 Multi-Agent 是 Agent 自己聊完给结果——没需求澄清、没独立验收、没经验积累。**上次翻的错下次继续翻。** 本系统用分权制衡解决：
+### 谁说了算
 
-| 机制 | 对应 Agent |
-|------|-----------|
-| 动手前先问清楚 | 发改委结构化 Q&A，≤5 轮 |
-| 执行有人盯 | 国家监委旁路心跳/停滞/合规 |
-| 结果有验收 | 审计署 cos 普通用户黑盒验证 |
-| 教训能存 | 档案局九维索引 + 《若干问题》|
+| Agent | 职责 | 不能干什么 |
+|-------|------|-----------|
+| **guowuyuan** 国务院 | 收文 / Q&A 中转 / 建组 / 呈报 / 签发红头 | 不做技术分析 |
+| **fagaiwei** 发改委 | 需求澄清 → 拆 phase → 出方案 → 建议编制 | 不执行、不写码 |
+| **jianwei** 国家监委 | 心跳监控 / 停滞检测 / 合规 / 返工追踪 | 不阻塞、不叫停 |
+| **shenjishu** 审计署 | cos 普通用户黑盒验收，≤3 轮退回 | 不读代码 |
+| **danganju** 档案局 | 归档 / 九维索引 / 交叉分析 / 消化追踪 | 不做决定 |
+
+### 谁干活
+
+| Agent | 职责 | 能调谁 |
+|-------|------|--------|
+| **kejibu** 科技部 | 并行调研，方案对比 | 参事室 / 信息中心 / 分析办 |
+| **gongxinbu** 工信部 | spec → 编码 → 自审 | 参事室 / 信息中心 / 分析办 |
+| **yingjibu** 应急管理部 | 会签 / 测试 / CVE 扫描 | 参事室 / 信息中心 / 分析办 |
+| **zhujianbu** 住建部 | Dockerfile / CI/CD / 部署 | 参事室 / 信息中心 / 分析办 |
+| **jiaoyubu** 教育部 | API 文档 / README / 架构说明 | 参事室 / 信息中心 / 分析办 |
+
+### 谁查资料
+
+| Agent | 干什么 |
+|-------|--------|
+| **canshishi** 参事室 | 深度技术分析，只读不写 |
+| **xinxizhongxin** 信息中心 | 外部文档 / GitHub / Context7 |
+| **fenxiban** 分析办 | 代码库搜索 grep/glob/lsp/ast-grep |
+
+---
+
+## 14 步走完一个任务
+
+| 步 | 谁 | 干什么 |
+|----|-----|------|
+| 1 | 国务院 | 登记 TASK-YYYYMMDD-NNN，转发发改委 |
+| 2 | 发改委→国务院→用户 | 需求 Q&A（≤5 轮，问不清就标注"基于假设"继续）|
+| 3 | 发改委 | 查档案 → 拆 phase → 出方案 → 建议编制 |
+| 4 | 国务院→用户 | 方案展示 → 用户说"可以"或"搞" |
+| 5 | 国务院 | `stp_workgroup_create` 组建工作组 + spawn 监委 |
+| 6 | 工作组 | 工信部 spec → 应急部会签 → 编码 → 住建部部署 → 教育部文档 |
+| 7 | 监委 | 后台盯心跳/停滞/返工，异常写报告给国务院 |
+| 8 | 审计署 | cos 普通用户验收：装 README → 跑功能 → 测边界 |
+| 9 | 部委→国务院 | 写工作报告 + 自我批评（踩了什么坑、什么教训）|
+| 10 | 档案局 | 收报告 → 九维索引 → 交叉分析 → 《若干问题》草案 |
+| 11 | 国务院 | 读草案 → 签发红头 → 归档 + 群发部委 |
+| 12 | 部委 | 学习红头 → 提炼 skill → `stp_skill_write` 落盘 |
+| 13 | 档案局 | `stp_danganju_digestion` 标记消化 |
+| 14 | 国务院 | `stp_workgroup_disband` 解散工作组。下次任务 skill 自动加载 |
+
+---
+
+## 几条红线
+
+- spec 未经会签 → **禁止编码**
+- Q&A ≤ 5 轮 · 退回 ≤ 3 轮 · 审计 ≤ 3 轮
+- 国务院不做技术分析。监委不阻塞。审计不读代码。
+- 按需部委只能 spawn `fenxiban / xinxizhongxin / canshishi`
 
 ---
 
@@ -67,90 +160,18 @@ graph TD
 
 ```bash
 git clone https://github.com/bomomoQWQ/Serve-the-People.git
-cd Serve-the-People && bash install.sh    # Unix
-# 或 powershell install.ps1               # Windows
+cd Serve-the-People && bash install.sh
 ```
 
-手动安装：`bun install && bun run build`，OpenCode 配置加：
-
-```jsonc
-{ "plugin": ["/path/to/Serve-the-People"] }
-```
-
-重启 OpenCode。配置文件 `.opencode/serve-the-people.jsonc` 自动生成。
+手动：`bun install && bun run build`，OpenCode 配置加 `{ "plugin": ["/path/to/Serve-the-People"] }`。重启即用。
 
 ---
 
-## Agent
-
-### 常设机构 (primary — 通过 stp_task() 调用)
-
-| Agent | 职责 |
-|-------|------|
-| **guowuyuan** 国务院 | 收文 / Q&A 中转 / 建组 / 呈报 / 签发红头。不做技术分析。 |
-| **fagaiwei** 发改委 | 需求澄清 → 拆 phase → 出方案 → 建议编制。不执行。 |
-| **jianwei** 国家监委 | 心跳监控 / 停滞检测 / 合规 / 返工追踪。不阻塞。 |
-| **shenjishu** 审计署 | cos 普通用户黑盒验收。≤3 轮退回。不读代码。 |
-| **danganju** 档案局 | 归档 / 九维索引 / 交叉分析 / 消化追踪。不做决定。 |
-
-### 按需部委 (subagent — 由国务院 spawn 进工作组)
-
-| Agent | 职责 |
-|-------|------|
-| **kejibu** 科技部 | 并行调研 (fenxiban + xinxizhongxin + canshishi) |
-| **gongxinbu** 工信部 | spec → 编码 → 自审 |
-| **yingjibu** 应急管理部 | 会签 / 测试 / CVE 扫描 |
-| **zhujianbu** 住建部 | Dockerfile / CI/CD / 部署 |
-| **jiaoyubu** 教育部 | API 文档 / README / 架构说明 |
-
-### 基础工具
-
-**canshishi** 参事室 · **xinxizhongxin** 信息中心 · **fenxiban** 分析办
-
----
-
-## 14 步流水线
-
-| 步 | 阶段 | 动作 |
-|----|------|------|
-| 1 | 收文 | 国务院登记 TASK-ID，转发发改委 |
-| 2 | Q&A | 发改委提问 → 国务院去术语 → 用户回答（≤5 轮）|
-| 3 | 方案 | 发改委查档案 → 拆 phase → 出方案 + 编制建议 |
-| 4 | 拍板 | 国务院完整性检查 → 用户确认 |
-| 5 | 建组 | stp_workgroup_create spawn 部委 + 监委旁路 |
-| 6 | 执行 | 工信部 spec → 应急部会签 → 编码 → 部署/文档（退回 ≤3 轮）|
-| 7 | 监督 | 监委心跳/停滞/返工监控 → 报告国务院 |
-| 8 | 验收 | 审计署黑盒验收（≤3 轮退回，第 3 轮已知缺陷放行）|
-| 9 | 报告 | 部委写工作报告 + 自我批评 → 国务院中转 |
-| 10 | 归档 | 档案局归档 → 九维索引 → 交叉分析 → 《若干问题》草案 |
-| 11 | 红头 | 国务院签发红头 → 归档 + 群发部委 |
-| 12 | 学习 | 部委学习 → 提炼 skill (stp_skill_write) |
-| 13 | 消化 | 档案局标记消化 (stp_danganju_digestion) |
-| 14 | 闭环 | stp_workgroup_disband 解散工作组，下次任务自动加载 skill |
-
----
-
-## 工具
-
-**工作组** `stp_workgroup_create` `stp_workgroup_status` `stp_workgroup_task` `stp_workgroup_message` `stp_workgroup_disband`
-
-**档案局** `stp_danganju_archive` `stp_danganju_query` `stp_danganju_analyze` `stp_danganju_draft` `stp_danganju_digestion`
-
-**审计署** `stp_shenjishu_audit`
-
-**代码分析** `stp_lsp_diagnostics` `stp_lsp_symbols` `stp_ast_grep_search` `stp_ast_grep_replace` `stp_edit` `stp_grep` `stp_glob`
-
-**Skill** `stp_skill_write` `stp_skill_list`
-
-**会话** `stp_task` `stp_background_output` `stp_background_cancel` `stp_session_*`
-
----
-
-## 存储布局
+## 存储
 
 ```
 ~/.servethepeople/          ← 全局持久（跨项目）
-├── skills/                 SKILL.md
+├── skills/                 SKILL.md（部委学习产物）
 └── archives/
     ├── works/              工作报告 + 自我批评
     ├── indices/index.json  九维索引
@@ -162,18 +183,25 @@ cd Serve-the-People && bash install.sh    # Unix
 
 ---
 
-## 红线
+## 工具一览
 
-- spec 未经会签 → **禁止编码**
-- Q&A ≤ 5 轮 · 退回 ≤ 3 轮 · 审计 ≤ 3 轮
-- 国务院不做技术分析 · 监委不阻塞 · 审计不读代码
-- 按需部委只能 spawn `fenxiban / xinxizhongxin / canshishi`
+**工作组** `stp_workgroup_create` `stp_workgroup_task` `stp_workgroup_message` `stp_workgroup_disband`
+
+**档案局** `stp_danganju_archive` `stp_danganju_query` `stp_danganju_analyze` `stp_danganju_draft` `stp_danganju_digestion`
+
+**审计署** `stp_shenjishu_audit`
+
+**代码** `stp_lsp_diagnostics` `stp_lsp_symbols` `stp_ast_grep_search` `stp_ast_grep_replace` `stp_edit` `stp_grep` `stp_glob`
+
+**Skill** `stp_skill_write` `stp_skill_list`
+
+**会话** `stp_task` `stp_background_output` `stp_background_cancel`
 
 ---
 
 ## 模型
 
-默认不设模型（OpenCode 自选）。推荐：
+默认不设（OpenCode 自选）。推荐：
 
 | Agent | 模型 |
 |-------|------|
@@ -181,27 +209,7 @@ cd Serve-the-People && bash install.sh    # Unix
 | `gongxinbu` | gpt-5.5 |
 | 其余 | claude-sonnet-4-6 |
 
-配置覆盖：`.opencode/serve-the-people.jsonc`
-
-```jsonc
-{ "agents": { "guowuyuan": { "model": "your-provider/model" } } }
-```
-
----
-
-## 项目结构
-
-```
-src/
-├── agents/       13 Agent factories + registry
-├── tools/        grep glob delegate-task workgroup danganju shenjishu
-│                 lsp-diagnostics lsp-symbols ast-grep-* hashline-edit skill-*
-│                 background-task
-├── hooks/        jianwei-monitor workgroup-mailbox-injector workgroup-idle-wake
-├── features/     workgroup/ pipeline/ shenjishu/ archives/
-├── mcp/          websearch context7 grep_app
-└── shared/       paths skill-loader ripgrep-cli
-```
+覆盖：`.opencode/serve-the-people.jsonc`
 
 ---
 
