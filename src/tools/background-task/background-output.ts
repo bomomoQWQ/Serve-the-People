@@ -1,10 +1,11 @@
 import { tool, type ToolDefinition } from "@opencode-ai/plugin/tool"
+import type { PluginInput } from "@opencode-ai/plugin"
 import type { TaskManager } from "../delegate-task/task-manager"
 
-export function createBackgroundOutput(manager: TaskManager): ToolDefinition {
+export function createBackgroundOutput(manager: TaskManager, client: PluginInput["client"]): ToolDefinition {
   return tool({
     description:
-      "Get output from a background task. For pending/running tasks, polls the session and returns output if available.",
+      "Get output from a background task. If the task completed already, queries the session directly via API. Work for both short-lived and long-running tasks.",
     args: {
       task_id: tool.schema.string().describe("Task ID (session ID) to get output from"),
     },
@@ -13,25 +14,43 @@ export function createBackgroundOutput(manager: TaskManager): ToolDefinition {
         const taskId = args.task_id as string
         const task = manager.getTask(taskId)
 
-        if (!task) return `Task not found: ${taskId}`
-
-        // Already errored or completed
-        if (task.status === "error") return `Error: ${task.error ?? "Unknown error"}`
-        if (task.status === "completed") return task.output ?? "Completed with no output."
-
-        // Still running — try polling
-        if (task.status === "running") {
-          const result = await manager.poll(task.sessionId, 10) // short poll
-          if (result.status === "completed") {
-            return result.output ?? "Completed with no output."
+        // If task in memory — use cached result
+        if (task) {
+          if (task.status === "error") return `Error: ${task.error ?? "Unknown error"}`
+          if (task.status === "completed") return task.output ?? "Completed with no output."
+          if (task.status === "running") {
+            const result = await manager.poll(task.sessionId, 10)
+            if (result.status === "completed") return result.output ?? "Completed with no output."
+            if (result.status === "error") return `Error: ${result.error ?? "Unknown error"}`
+            return "Still running. Check again."
           }
-          if (result.status === "error") {
-            return `Error: ${result.error ?? "Unknown error"}`
-          }
-          return "Still running. Check again with stp_background_output."
         }
 
-        return `Status: ${task.status}`
+        // Task not in memory (completed and cleaned up, or never tracked)
+        // Try querying the session directly
+        if (client.session?.messages) {
+          const msgResult = await client.session.messages({ path: { id: taskId } })
+          const msgs = msgResult.data
+          if (msgs && msgs.length > 0) {
+            // Find last assistant message
+            for (let j = msgs.length - 1; j >= 0; j--) {
+              const msg = msgs[j]
+              if (msg.info?.role === "assistant") {
+                const output = (msg.parts ?? [])
+                  .filter((p) => p.type === "text")
+                  .map((p) => p.text ?? "")
+                  .join("\n")
+                return output || "(no output)"
+              }
+            }
+          }
+        }
+
+        // If the session ID looks like a direct session ID, it might have completed
+        if (taskId.length > 8) {
+          return "Task completed but output unavailable (session may have been cleaned up)."
+        }
+        return `Task not found: ${taskId}`
       } catch (e) {
         return `Error: ${e instanceof Error ? e.message : String(e)}`
       }

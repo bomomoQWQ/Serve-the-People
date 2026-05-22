@@ -59,7 +59,7 @@ export function createTools(ctx: PluginInput): Record<string, ToolDefinition> {
 
   // Background task tools
   Object.assign(tools, {
-    stp_background_output: createBackgroundOutput(taskManager),
+    stp_background_output: createBackgroundOutput(taskManager, ctx.client),
     stp_background_cancel: createBackgroundCancel(taskManager),
   })
 
