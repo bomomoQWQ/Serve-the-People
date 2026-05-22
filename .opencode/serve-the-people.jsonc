@@ -1,0 +1,28 @@
+// serve-the-people 插件配置
+// 此文件为默认配置，按需修改后重启 OpenCode 生效
+
+{
+  // 启用调试日志
+  "debug": false,
+
+  // 覆盖 Agent 默认模型（可选）
+  // "agents": {
+  //   "guowuyuan": { "model": "your-provider/your-model" },
+  //   "fagaiwei":  { "model": "your-provider/your-model" }
+  // },
+
+  // MCP 服务开关
+  "mcp": {
+    "websearch": true,   // Exa/Tavily 网页搜索
+    "context7": true,    // 库文档查询
+    "grep_app": true,    // GitHub 代码搜索
+    "lsp": false,        // 语言服务（需配置 lsp-tools-mcp）
+    "ast_grep": false    // AST 搜索（需配置 ast-grep-mcp）
+  },
+
+  // Skill 加载
+  "skills": {
+    "enabled": true,     // 是否启用文件级 skill 加载
+    "extraDirs": []      // 额外扫描目录
+  }
+}
