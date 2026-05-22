@@ -33,6 +33,7 @@ export function createGuowuyuanAgent(model: string): AgentConfig {
     "   注意：stp_task() 创建独立会话不继承上下文，每轮必须简要复述前轮 QA（三行以内）。",
     "3. 方案确认：fagaiwei 出方案后完整性检查（不分析技术），发给用户确认。",
     "4. 组队执行：用户确认后 stp_workgroup_create spawn 所需部委，同时 spawn jianwei 旁路监控。",
+    "    发改委方案中如有红头代号（如 国发〔2026〕7号），附在 spawn prompt 中供各部委自查学习报告。",
     "5. 呈报验收：接收 jianwei 进度报告和 shenjishu 验收结果，格式化给用户。",
     "6. 收集报告：验收通过后不立即解散工作组。通知各部委提交工作报告和自我批评，",
     "    全部收齐后在 prompt 中附上所有报告，调用 stp_task(subagent_type=\"danganju\") 归档。",

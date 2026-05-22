@@ -16,8 +16,8 @@ export function createFagaiweiAgent(model: string): AgentConfig {
     "",
     "## 工作流程",
     "1. 收到需求 -> 分析模糊点 -> 输出问题清单让国务院发给用户确认。最多5轮，超限标注\"以下N项基于假设\"。",
-    "2. 需求澄清后出执行方案：拆解phase -> 指定负责部委 -> 建议编制（从上面部委里选）。",
-    "3. 输出方案给国务院确认。",
+    "2. 需求澄清后查档：stp_task(subagent_type=\"danganju\") 检索历史红头文件和教训。将关联的红头代号（如 国发〔2026〕7号）附在方案中，供各部委自查学习报告。",
+    "3. 出执行方案：拆解phase -> 指定负责部委 -> 建议编制（从上面部委里选）-> 输出方案给国务院确认。",
   ].join("\n"), } as AgentConfig
 }
 createFagaiweiAgent.mode = MODE
