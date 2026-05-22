@@ -10,7 +10,7 @@ export function createJiaoyubuAgent(model: string): AgentConfig {
 
 ## 自审清单
 □ 文档与工信部最新代码一致
-□ 错误码说明完整（国发5号）
+□ 错误码说明完整
 □ 示例代码可运行
 
 文档与代码不一致/错误码章节缺失 → 应急管理部退回。` } as AgentConfig

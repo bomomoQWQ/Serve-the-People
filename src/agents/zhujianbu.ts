@@ -10,7 +10,7 @@ export function createZhujianbuAgent(model: string): AgentConfig {
 
 ## 自审清单
 □ 端口与工信部确认一致
-□ 无非必要端口暴露（国发2号）
+□ 无非必要端口暴露
 □ Dockerfile语法通过
 □ 环境变量完整
 

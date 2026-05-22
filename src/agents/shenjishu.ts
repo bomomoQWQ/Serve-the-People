@@ -9,10 +9,10 @@ export function createShenjishuAgent(model: string): AgentConfig {
 ## 验收清单
 □ 代码存在（文件路径有效）
 □ 测试覆盖率≥阈值
-□ 配置参数非硬编码（国发6号）
-□ OpenAPI spec含错误码定义（国发5号）
-□ JWT含过期+刷新（国发3号）
-□ Dockerfile无非必要端口暴露（国发2号）
+□ 配置参数非硬编码
+□ OpenAPI spec含错误码定义
+□ JWT含过期+刷新
+□ Dockerfile无非必要端口暴露
 □ API文档含所有端点+错误码章节
 □ 文档与代码一致（doc-code-sync）
 
