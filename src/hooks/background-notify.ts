@@ -1,47 +1,50 @@
 /**
- * Background task notification — injects <system-reminder> into parent session
- * when a stp_task(run_in_background=true) child session goes idle.
+ * Background task notification — stores pending notifications on child idle,
+ * injected into parent session via chat.message hook.
+ *
+ * Cross-session promptAsync from session.idle handler is unreliable.
+ * Instead, queue notifications and inject them when the parent sends
+ * its next chat.message.
  */
-import type { PluginInput } from "@opencode-ai/plugin"
-
 interface BackgroundEntry {
   sessionId: string
   parentSessionId: string
   agent: string
+  description?: string
 }
 
 const registry = new Map<string, BackgroundEntry>()
+const pending = new Map<string, string[]>()
 
 export function registerBackgroundTask(entry: BackgroundEntry): void {
   registry.set(entry.sessionId, entry)
 }
 
-export async function handleBackgroundTaskIdle(
-  client: PluginInput["client"],
-  sessionId: string,
-): Promise<void> {
+export function handleBackgroundTaskIdle(_client: unknown, sessionId: string): void {
   const entry = registry.get(sessionId)
   if (!entry) return
 
   registry.delete(sessionId)
 
-  const notification = `<system-reminder>
-[BACKGROUND TASK COMPLETE]
-**ID:** \`${entry.sessionId}\`
-**Agent:** ${entry.agent}
+  const text = `- \`${entry.sessionId}\`: ${entry.description ?? entry.agent}`
+  const parentId = entry.parentSessionId
+  const list = pending.get(parentId) ?? []
+  list.push(text)
+  pending.set(parentId, list)
+}
 
-Use \`stp_background_output(task_id="${entry.sessionId}")\` to retrieve result.
+/** Inject pending notifications into parent chat context. Call from chat.message hook. */
+export function injectPendingNotifications(sessionId: string): string | null {
+  const list = pending.get(sessionId)
+  if (!list || list.length === 0) return null
+
+  pending.delete(sessionId)
+  return `<system-reminder>
+[ALL BACKGROUND TASKS COMPLETE]
+
+**Completed:**
+${list.join("\n")}
+
+Use \`stp_background_output(task_id="<id>")\` to retrieve each result.
 </system-reminder>`
-
-  try {
-    const api = client.session as unknown as { promptAsync?: (opts: { path: { id: string }; body: { parts: Array<{ type: string; text: string }> } }) => Promise<unknown> }
-    if (api.promptAsync) {
-      await api.promptAsync({
-        path: { id: entry.parentSessionId },
-        body: { parts: [{ type: "text", text: notification }] },
-      })
-    }
-  } catch (e) {
-    // Best effort
-  }
 }

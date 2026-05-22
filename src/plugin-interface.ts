@@ -4,7 +4,7 @@ import type { ServeThePeopleConfig } from "./config"
 import type { BuiltinMcpConfig } from "./mcp/types"
 import { processUserMessage } from "./features/pipeline/coordinator"
 import { createWorkgroupMailboxInjector, type MailboxInjectorHook } from "./hooks/workgroup-mailbox-injector"
-import { handleBackgroundTaskIdle } from "./hooks/background-notify"
+import { handleBackgroundTaskIdle, injectPendingNotifications } from "./hooks/background-notify"
 
 /** In-memory pipeline state per session */
 const sessions = new Map<string, { taskId?: string }>()
@@ -63,7 +63,7 @@ export function createPluginInterface(
         const sessionId = props?.session?.id
         if (sessionId) {
           workgroupIdleWake?.(sessionId).catch(() => {})
-          handleBackgroundTaskIdle(ctx.client, sessionId).catch(() => {})
+          handleBackgroundTaskIdle(ctx.client, sessionId)
         }
       }
     },
@@ -84,6 +84,14 @@ export function createPluginInterface(
 
       if (!userText) return
 
+      // Inject pending background notifications
+      const note = injectPendingNotifications(sessionId)
+      if (note) {
+        const parts = output.parts as Array<Record<string, unknown>>
+        output.parts = [...parts, { type: "text", text: note }] as typeof output.parts
+      }
+
+      // Process through pipeline
       const result = processUserMessage(userText, session.taskId)
 
       if (result.userMessage) {
