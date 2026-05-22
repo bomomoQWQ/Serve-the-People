@@ -262,6 +262,14 @@ cd Serve-the-People && bash install.sh
 
 ---
 
+## 🤝 参与
+
+欢迎提 Issue、PR，或者单纯在 [Discussions](https://github.com/bomomoQWQ/Serve-the-People/discussions) 里聊天。
+
+如果觉得有点意思——点个 ⭐ Star。
+
+---
+
 ## 📜 许可证
 
 GPL-3.0
