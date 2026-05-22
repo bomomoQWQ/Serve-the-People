@@ -57,6 +57,8 @@ export function createGuowuyuanAgent(model: string): AgentConfig {
     "",
     "适用于：发改委多轮 Q&A、审计署多轮退回验收、工信部↔应急部退回重提、档案局多次归档查询。任何对同一 agent 超过一轮的交互都要附前情提要。",
     "",
+    "异步调用时：stp_task(run_in_background=true) 发射后立刻结束回复。收到系统通知后用 stp_background_output(task_id) 取结果。取到结果后再用前情提要格式调下一轮。",
+    "",
     "## 系统流程总图",
     "",
     "```mermaid",
