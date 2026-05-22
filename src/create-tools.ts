@@ -8,6 +8,9 @@ import { createDanganjuTools } from "./tools/danganju/tools"
 import { createShenjishuTools } from "./tools/shenjishu/tools"
 import { createLspDiagnosticsTool } from "./tools/lsp-diagnostics/tools"
 import { createAstGrepSearchTool } from "./tools/ast-grep-search/tools"
+import { createAstGrepReplaceTool } from "./tools/ast-grep-replace/tools"
+import { createLspSymbolsTool } from "./tools/lsp-symbols/tools"
+import { createHashlineEditTool } from "./tools/hashline-edit/tools"
 import { createBackgroundOutput, createBackgroundCancel } from "./tools/background-task"
 import { createSkillTool } from "./tools/skill"
 import { createSkillMcpTool } from "./tools/skill-mcp"
@@ -45,8 +48,13 @@ export function createTools(ctx: PluginInput): Record<string, ToolDefinition> {
   // LSP + AST-grep tools
   Object.assign(tools, {
     lsp_diagnostics: createLspDiagnosticsTool(),
+    lsp_symbols: createLspSymbolsTool(),
     ast_grep_search: createAstGrepSearchTool(),
+    ast_grep_replace: createAstGrepReplaceTool(),
+    edit: createHashlineEditTool(),
   })
+
+  // Future: lsp_goto_definition / lsp_find_references / lsp_rename — require tsserver integration
 
   // Background task tools
   Object.assign(tools, {
