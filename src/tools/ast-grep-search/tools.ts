@@ -1,11 +1,10 @@
 /**
  * AST-grep search tool — AST-aware code pattern search.
  *
- * Uses @ast-grep/cli (sg) to search code with AST patterns.
- * Falls back to grep if sg is not available.
+ * Uses @ast-grep/cli (sg) via Bun.spawn for async, non-blocking execution.
+ * Cross-platform argument passing (no shell string interpolation).
  */
 import { tool, type ToolDefinition } from "@opencode-ai/plugin/tool"
-import { execSync } from "node:child_process"
 
 const SUPPORTED_LANGUAGES = [
   "typescript", "tsx", "javascript", "python", "rust", "go",
@@ -13,6 +12,23 @@ const SUPPORTED_LANGUAGES = [
   "yaml", "kotlin", "swift", "ruby", "lua", "scala", "nix",
   "elixir", "haskell", "php", "solidity",
 ] as const
+
+async function runSgScan(args: string[], cwd: string): Promise<{ stdout: string; stderr: string; exitCode: number }> {
+  const proc = Bun.spawn(["npx", "sg", ...args], {
+    cwd,
+    env: { ...process.env, NO_COLOR: "1" },
+    stdout: "pipe",
+    stderr: "pipe",
+  })
+
+  const [stdout, stderr] = await Promise.all([
+    new Response(proc.stdout).text(),
+    new Response(proc.stderr).text(),
+  ])
+  const exitCode = await proc.exited
+
+  return { stdout, stderr, exitCode }
+}
 
 export function createAstGrepSearchTool(): ToolDefinition {
   return tool({
@@ -26,34 +42,35 @@ export function createAstGrepSearchTool(): ToolDefinition {
         .describe(`目标语言: ${SUPPORTED_LANGUAGES.join(", ")}`),
       paths: tool.schema.array(tool.schema.string()).optional()
         .describe("搜索路径（默认当前目录）"),
-      context: tool.schema.number().optional()
-        .describe("显示上下文行数（默认 2）"),
     },
     execute: async (args, context) => {
       const pattern = args.pattern as string
       const lang = args.lang as string | undefined
       const paths = (args.paths as string[]) ?? ["."]
-      const ctxLines = (args.context as number) ?? 2
       const cwd = (context as { cwd?: string } | undefined)?.cwd ?? process.cwd()
 
       if (!lang || !SUPPORTED_LANGUAGES.includes(lang as typeof SUPPORTED_LANGUAGES[number])) {
         return `错误：不支持的语言 "${lang}"。支持: ${SUPPORTED_LANGUAGES.join(", ")}`
       }
 
+      const sgArgs = ["scan", "--pattern", pattern, "--lang", lang, "--json", ...paths]
+
       try {
-        const pathArgs = paths.map(p => `"${p}"`).join(" ")
-        const cmd = `npx sg scan --pattern "${pattern.replace(/"/g, '\\"')}" --lang ${lang} ${pathArgs} --json`
+        const { stdout, stderr, exitCode } = await runSgScan(sgArgs, cwd)
 
-        const output = execSync(cmd, {
-          cwd,
-          encoding: "utf-8",
-          maxBuffer: 10 * 1024 * 1024,
-          timeout: 60000,
-          env: { ...process.env, NO_COLOR: "1" },
-        })
+        if (stderr && !stdout) {
+          if (stderr.includes("not found") || stderr.includes("ENOENT")) {
+            return "AST-grep (sg) 未安装。请运行 `bun add @ast-grep/cli`。"
+          }
+          if (stderr.includes("Cannot parse")) {
+            return `AST 模式解析失败: ${stderr.slice(0, 500)}`
+          }
+          return `AST-grep 错误: ${stderr.slice(0, 500)}`
+        }
 
-        if (!output.trim()) return "未找到匹配。"
-        const results = JSON.parse(output) as Array<{
+        if (!stdout.trim()) return "未找到匹配。"
+
+        const results = JSON.parse(stdout) as Array<{
           file: string
           lines: string
           range: { start: { line: number; column: number }; end: { line: number; column: number } }
@@ -64,15 +81,7 @@ export function createAstGrepSearchTool(): ToolDefinition {
           `### ${r.file}:${r.range.start.line}\n\`\`\`${lang}\n${r.lines}\n\`\`\``
         ).join("\n\n")
       } catch (e) {
-        const err = e as { stdout?: string; stderr?: string; message?: string }
-        const errorMsg = err.stderr || err.message || ""
-        if (errorMsg.includes("not found") || errorMsg.includes("ENOENT")) {
-          return "AST-grep (sg) 未安装。请运行 `bun add @ast-grep/cli` 或使用 grep 替代。"
-        }
-        if (errorMsg.includes("Cannot parse")) {
-          return `AST 模式解析失败: ${errorMsg.slice(0, 500)}\n请检查 pattern 语法。`
-        }
-        return `AST-grep 搜索失败: ${errorMsg.slice(0, 1000)}`
+        return `AST-grep 搜索失败: ${e instanceof Error ? e.message : String(e)}`
       }
     },
   })

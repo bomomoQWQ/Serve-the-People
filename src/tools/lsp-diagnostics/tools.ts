@@ -1,11 +1,10 @@
 /**
  * LSP diagnostics tool — runs project typecheck and parses output.
  *
- * This is a lightweight replacement for the full LSP MCP server.
- * It runs `bun run typecheck` or `tsc --noEmit` and parses error output.
+ * Uses Bun.spawn for async, non-blocking execution.
+ * Cross-platform: no PowerShell/Select-String dependency.
  */
 import { tool, type ToolDefinition } from "@opencode-ai/plugin/tool"
-import { execSync } from "node:child_process"
 
 interface Diagnostic {
   file: string
@@ -16,12 +15,10 @@ interface Diagnostic {
   code: string
 }
 
-function parseTscOutput(output: string, cwd: string): Diagnostic[] {
+function parseTscOutput(output: string): Diagnostic[] {
   const diagnostics: Diagnostic[] = []
-  const lines = output.split(/\r?\n/)
-  for (const line of lines) {
-    // tsc format: file.ts(line,col): error TS####: message
-    const match = line.match(/^(.+?)\((\d+),(\d+)\): (error|warning) (TS\d+): (.+)$/)
+  for (const line of output.split("\n")) {
+    const match = line.match(/^(.+?)\((\d+),(\d+)\):\s*(error|warning)\s*(TS\d+):\s*(.+)$/)
     if (match) {
       diagnostics.push({
         file: match[1],
@@ -36,62 +33,54 @@ function parseTscOutput(output: string, cwd: string): Diagnostic[] {
   return diagnostics
 }
 
+async function runTypecheck(cwd: string): Promise<{ output: string; exitCode: number }> {
+  const proc = Bun.spawn(["npx", "tsc", "--noEmit", "--pretty", "false"], {
+    cwd,
+    env: { ...process.env, CI: "true", FORCE_COLOR: "0" },
+    stdout: "pipe",
+    stderr: "pipe",
+  })
+
+  const [stdout, stderr] = await Promise.all([
+    new Response(proc.stdout).text(),
+    new Response(proc.stderr).text(),
+  ])
+  const exitCode = await proc.exited
+
+  return { output: stdout + stderr, exitCode }
+}
+
 export function createLspDiagnosticsTool(): ToolDefinition {
   return tool({
     description:
-      "运行项目类型检查（tsc --noEmit 或 bun run typecheck），返回诊断错误/警告列表。用于代码提交前验证。",
+      "运行项目类型检查（tsc --noEmit），返回诊断错误/警告列表。用于代码提交前验证。",
     args: {
       file_path: tool.schema.string().optional()
-        .describe("仅检查指定文件（可选，不传则全项目检查）"),
+        .describe("仅过滤指定文件的诊断（可选，不传则全部）"),
       severity: tool.schema.string().optional()
         .describe("过滤: error, warning, all（默认 all）"),
     },
     execute: async (args, context) => {
       const filePath = args.file_path as string | undefined
       const severity = (args.severity as string) ?? "all"
-      // context may not have cwd, default to process.cwd()
       const cwd = (context as { cwd?: string } | undefined)?.cwd ?? process.cwd()
 
       try {
-        const cmd = filePath
-          ? `npx tsc --noEmit --pretty false 2>&1 | Select-String "${filePath.replace(/\\/g, "\\\\")}"`
-          : process.platform === "win32"
-            ? "npx tsc --noEmit --pretty false 2>&1"
-            : "npx tsc --noEmit --pretty false 2>&1"
+        const { output, exitCode } = await runTypecheck(cwd)
+        if (!output.trim() && exitCode === 0) return "✅ 类型检查通过，无错误。"
 
-        const output = execSync(cmd, {
-          cwd,
-          encoding: "utf-8",
-          maxBuffer: 10 * 1024 * 1024,
-          timeout: 120000,
-          env: { ...process.env, CI: "true", FORCE_COLOR: "0" },
-        })
+        const all = parseTscOutput(output)
+        let filtered = severity === "all" ? all : all.filter(d => d.severity === severity)
 
-        if (!output.trim()) return "✅ 类型检查通过，无错误。"
-        const all = parseTscOutput(output, cwd)
-        const filtered = severity === "all"
-          ? all
-          : all.filter(d => d.severity === severity)
-
-        if (filtered.length === 0) return "✅ 类型检查通过，无匹配诊断。"
-        return filtered.map(d =>
-          `${d.severity === "error" ? "❌" : "⚠️"} ${d.file}:${d.line}:${d.column} — ${d.code}: ${d.message}`
-        ).join("\n")
-      } catch (e) {
-        // tsc exits non-zero on errors, output is in stderr
-        const err = e as { stdout?: string; stderr?: string; message?: string }
-        const output = err.stdout || err.stderr || err.message || ""
-        if (!output.trim() && !filePath) return "✅ 类型检查通过，无错误。"
-
-        const all = parseTscOutput(output, cwd)
-        const filtered = severity === "all"
-          ? all
-          : all.filter(d => d.severity === severity)
+        if (filePath) {
+          filtered = filtered.filter(d => d.file.includes(filePath))
+        }
 
         if (filtered.length === 0) {
-          return output.trim()
-            ? `类型检查发现非标准格式问题:\n${output.slice(0, 2000)}`
-            : "✅ 类型检查通过。"
+          return exitCode === 0
+            ? "✅ 类型检查通过，无匹配诊断。"
+            : `类型检查发现 ${all.length} 个问题（全部文件），当前过滤无匹配：\n` +
+              all.slice(0, 3).map(d => `${d.file}:${d.line} — ${d.message}`).join("\n")
         }
 
         return [
@@ -100,6 +89,8 @@ export function createLspDiagnosticsTool(): ToolDefinition {
             `${d.severity === "error" ? "❌" : "⚠️"} ${d.file}:${d.line}:${d.column} — ${d.code}: ${d.message}`
           ),
         ].join("\n")
+      } catch (e) {
+        return `类型检查失败: ${e instanceof Error ? e.message : String(e)}`
       }
     },
   })
