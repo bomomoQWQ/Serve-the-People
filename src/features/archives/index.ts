@@ -28,6 +28,7 @@ export {
   renderWorkReportAndCriticism,
   renderRedHeadDocument,
   renderAuditReport,
+  renderLearningReport,
 } from "./templates"
 
 // 存储层

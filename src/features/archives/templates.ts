@@ -141,6 +141,41 @@ export interface PatternFlag {
   suggestion: string
 }
 
+/** 渲染《(部委)关于国发〔YYYY〕N号文件的学习与 skill 提炼报告》*/
+export function renderLearningReport(
+  ministry: string,
+  redHeadCode: string,
+  skillName: string,
+  skillDescription: string,
+  lessons: string[],
+): string {
+  return [
+    `# ${ministry}关于${redHeadCode}文件的学习与 skill 提炼报告`,
+    "",
+    `日期：${new Date().toISOString().slice(0, 10)}`,
+    "",
+    "---",
+    "",
+    "## 学习内容",
+    "",
+    ...lessons.map((l, i) => `${i + 1}. ${l}`),
+    "",
+    "## 提炼 skill",
+    "",
+    `- **Skill 名称**：${skillName}`,
+    `- **描述**：${skillDescription}`,
+    `- **来源**：${redHeadCode}`,
+    "",
+    "## 消化状态",
+    "",
+    "已学习 → 已生成 skill → 已消化 ✅",
+    "",
+    "---",
+    "",
+    ministry,
+  ].join("\n")
+}
+
 export interface AnalysisResult {
   patterns: PatternFlag[]
   draftContent?: string
