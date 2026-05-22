@@ -5,16 +5,6 @@ import type { BuiltinMcpConfig } from "./mcp/types"
 import { processUserMessage } from "./features/pipeline/coordinator"
 import { createWorkgroupMailboxInjector, type MailboxInjectorHook } from "./hooks/workgroup-mailbox-injector"
 import { handleBackgroundTaskIdle, injectPendingNotifications } from "./hooks/background-notify"
-import { appendFileSync, existsSync, mkdirSync } from "node:fs"
-import { join } from "node:path"
-
-function debugLog(msg: string): void {
-  try {
-    const dir = ".servethepeople"
-    if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
-    appendFileSync(join(dir, "debug.log"), `[${new Date().toISOString()}] ${msg}\n`)
-  } catch { /* best effort */ }
-}
 
 /** In-memory pipeline state per session */
 const sessions = new Map<string, { taskId?: string }>()
@@ -74,7 +64,6 @@ export function createPluginInterface(
           ?? (props?.sessionID as string)
           ?? (props?.session_id as string)
           ?? (props?.id as string)
-          debugLog(`session.idle: sessionId=${sessionId ?? "MISSING"}, propsKeys=${Object.keys(props ?? {}).join(",")}`)
         if (sessionId) {
           workgroupIdleWake?.(sessionId).catch(() => {})
           handleBackgroundTaskIdle(ctx.client, sessionId)
