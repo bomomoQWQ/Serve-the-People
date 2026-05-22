@@ -6,6 +6,8 @@ import { createDelegateTask } from "./tools/delegate-task"
 import { createWorkgroupTools } from "./tools/workgroup/tools"
 import { createDanganjuTools } from "./tools/danganju/tools"
 import { createShenjishuTools } from "./tools/shenjishu/tools"
+import { createLspDiagnosticsTool } from "./tools/lsp-diagnostics/tools"
+import { createAstGrepSearchTool } from "./tools/ast-grep-search/tools"
 import { createBackgroundOutput, createBackgroundCancel } from "./tools/background-task"
 import { createSkillTool } from "./tools/skill"
 import { createSkillMcpTool } from "./tools/skill-mcp"
@@ -39,6 +41,12 @@ export function createTools(ctx: PluginInput): Record<string, ToolDefinition> {
 
   // Audit (审计署) tools
   Object.assign(tools, createShenjishuTools())
+
+  // LSP + AST-grep tools
+  Object.assign(tools, {
+    lsp_diagnostics: createLspDiagnosticsTool(),
+    ast_grep_search: createAstGrepSearchTool(),
+  })
 
   // Background task tools
   Object.assign(tools, {
