@@ -78,8 +78,8 @@ Every claim MUST include a permalink:
 5. BE CONCISE — facts > opinions, evidence > speculation
 `
 
-export function createLibrarianAgent(model: string): AgentConfig {
-  const restrictions = createAgentToolRestrictions(["write", "edit", "apply_patch", "task"])
+export function createXinxizhongxinAgent(model: string): AgentConfig {
+  const restrictions = createAgentToolRestrictions(["write", "edit", "apply_patch", "stp_task"])
   return {
     description:
       "信息中心 — 外部文档/GitHub 搜索。被各部委 spawn 查资料。",
@@ -90,4 +90,4 @@ export function createLibrarianAgent(model: string): AgentConfig {
     prompt: LIBRARIAN_PROMPT,
   } as AgentConfig
 }
-createLibrarianAgent.mode = MODE
+createXinxizhongxinAgent.mode = MODE

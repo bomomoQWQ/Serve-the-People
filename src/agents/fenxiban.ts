@@ -32,10 +32,10 @@ const EXPLORE_PROMPT = `You are a codebase search specialist. Your job: find fil
 - Stop when you have enough context — don't over-explore
 `
 
-export function createExploreAgent(model: string): AgentConfig {
+export function createFenxibanAgent(model: string): AgentConfig {
   const restrictions = createAgentToolRestrictions(
-    ["write", "edit", "apply_patch", "task"],
-    ["stp_lsp_symbols", "lsp_goto_definition", "lsp_find_references", "lsp_diagnostics", "stp_ast_grep_search"],
+    ["write", "edit", "apply_patch", "stp_task"],
+    ["stp_lsp_symbols", "stp_lsp_diagnostics", "stp_ast_grep_search"],
   )
   return {
     description:
@@ -47,4 +47,4 @@ export function createExploreAgent(model: string): AgentConfig {
     prompt: EXPLORE_PROMPT,
   } as AgentConfig
 }
-createExploreAgent.mode = MODE
+createFenxibanAgent.mode = MODE

@@ -80,8 +80,8 @@ Before finalizing answers on architecture, security, or performance:
 Your response goes directly to the user with no intermediate processing. Make your final message self-contained: a clear recommendation they can act on immediately.
 </delivery>`
 
-export function createOracleAgent(model: string): AgentConfig {
-  const restrictions = createAgentToolRestrictions(["write", "edit", "apply_patch", "task"])
+export function createCanshishiAgent(model: string): AgentConfig {
+  const restrictions = createAgentToolRestrictions(["write", "edit", "apply_patch", "stp_task"])
   return {
     description:
       "参事室 — 只读高 IQ 技术顾问。被各部委 spawn 做深度分析。",
@@ -92,4 +92,4 @@ export function createOracleAgent(model: string): AgentConfig {
     prompt: ORACLE_PROMPT,
   } as AgentConfig
 }
-createOracleAgent.mode = MODE
+createCanshishiAgent.mode = MODE

@@ -1,8 +1,8 @@
 import type { AgentConfig } from "@opencode-ai/sdk"
 import type { AgentFactory } from "../types"
-import { createOracleAgent } from "../oracle"
-import { createLibrarianAgent } from "../librarian"
-import { createExploreAgent } from "../explore"
+import { createCanshishiAgent } from "../canshishi"
+import { createXinxizhongxinAgent } from "../xinxizhongxin"
+import { createFenxibanAgent } from "../fenxiban"
 import { createGuowuyuanAgent } from "../guowuyuan"
 import { createFagaiweiAgent } from "../fagaiwei"
 import { createKejibuAgent } from "../kejibu"
@@ -25,7 +25,7 @@ export const BUILTIN_AGENT_NAMES = [
 export type BuiltinAgentName = (typeof BUILTIN_AGENT_NAMES)[number]
 
 export const agentSources: Record<BuiltinAgentName, AgentFactory> = {
-  canshishi: createOracleAgent, xinxizhongxin: createLibrarianAgent, fenxiban: createExploreAgent,
+  canshishi: createCanshishiAgent, xinxizhongxin: createXinxizhongxinAgent, fenxiban: createFenxibanAgent,
   guowuyuan: createGuowuyuanAgent, fagaiwei: createFagaiweiAgent, kejibu: createKejibuAgent,
   gongxinbu: createGongxinbuAgent, yingjibu: createYingjibuAgent,
   zhujianbu: createZhujianbuAgent, jiaoyubu: createJiaoyubuAgent,
