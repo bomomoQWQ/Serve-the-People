@@ -16,8 +16,8 @@
     "websearch": true,   // Exa/Tavily 网页搜索
     "context7": true,    // 库文档查询
     "grep_app": true,    // GitHub 代码搜索
-    "lsp": false,        // 语言服务（需配置 lsp-tools-mcp）
-    "ast_grep": false    // AST 搜索（需配置 ast-grep-mcp）
+    "lsp": false,        // LSP 已改为原生工具（lsp_diagnostics / lsp_symbols），无需 MCP
+    "ast_grep": false    // AST-grep 已改为原生工具（ast_grep_search / ast_grep_replace），无需 MCP
   },
 
   // Skill 加载
