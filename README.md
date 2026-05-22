@@ -1,4 +1,4 @@
-# "为人民服务！"系统
+# 🏛️ "为人民服务！"系统
 
 > 13 个 Agent 参照现代国家机关架构各司其职：发改委把需求问到透，应急部会签不让乱写，审计署 cos 用户黑盒验收，档案局用九维索引让上次踩的坑这次不踩。
 > 
@@ -15,7 +15,7 @@
 
 ---
 
-## 为什么不是自由对话
+## 💬 为什么不是自由对话
 
 普通 Multi-Agent 是这样的：
 
@@ -99,7 +99,7 @@ Agent：搞完了。顺便把数据库也重构了，
 
 ---
 
-## 流程总览
+## 🔄 流程总览
 
 ```mermaid
 graph TD
@@ -147,9 +147,9 @@ graph TD
 
 ---
 
-## 13 个 Agent 各司其职
+## 👥 13 个 Agent 各司其职
 
-### 谁说了算
+### ⚖️ 谁说了算
 
 | Agent | 职责 | 不能干什么 |
 |-------|------|-----------|
@@ -159,7 +159,7 @@ graph TD
 | **shenjishu** 审计署 | cos 普通用户黑盒验收，≤3 轮退回 | 不读代码 |
 | **danganju** 档案局 | 归档 / 九维索引 / 交叉分析 / 消化追踪 | 不做决定 |
 
-### 谁干活
+### 🔧 谁干活
 
 | Agent | 职责 | 能调谁 |
 |-------|------|--------|
@@ -169,7 +169,7 @@ graph TD
 | **zhujianbu** 住建部 | Dockerfile / CI/CD / 部署 | 参事室 / 信息中心 / 分析办 |
 | **jiaoyubu** 教育部 | API 文档 / README / 架构说明 | 参事室 / 信息中心 / 分析办 |
 
-### 谁查资料
+### 📚 谁查资料
 
 | Agent | 干什么 |
 |-------|--------|
@@ -179,7 +179,7 @@ graph TD
 
 ---
 
-## 14 步走完一个任务
+## 📋 14 步走完一个任务
 
 | 步 | 谁 | 干什么 |
 |----|-----|------|
@@ -200,7 +200,7 @@ graph TD
 
 ---
 
-## 几条红线
+## 🚫 几条红线
 
 - spec 未经会签 → **禁止编码**
 - Q&A ≤ 5 轮 · 退回 ≤ 3 轮 · 审计 ≤ 3 轮
@@ -209,7 +209,7 @@ graph TD
 
 ---
 
-## 安装
+## 📦 安装
 
 ```bash
 git clone https://github.com/bomomoQWQ/Serve-the-People.git
@@ -220,7 +220,7 @@ cd Serve-the-People && bash install.sh
 
 ---
 
-## 存储
+## 💾 存储
 
 ```
 ~/.servethepeople/          ← 全局持久（跨项目）
@@ -236,7 +236,7 @@ cd Serve-the-People && bash install.sh
 
 ---
 
-## 工具一览
+## 🛠️ 工具一览
 
 **工作组** `stp_workgroup_create` `stp_workgroup_task` `stp_workgroup_message` `stp_workgroup_disband`
 
@@ -252,7 +252,7 @@ cd Serve-the-People && bash install.sh
 
 ---
 
-## 模型
+## 🤖 模型
 
 默认不设（OpenCode 自选）。推荐：
 
@@ -266,12 +266,12 @@ cd Serve-the-People && bash install.sh
 
 ---
 
-## 致谢
+## 🙏 致谢
 
 [oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) · [edict 三省六部](https://github.com/cft0808/edict) · [OpenCode](https://opencode.ai)
 
 ---
 
-## 许可证
+## 📜 许可证
 
 GPL-3.0
