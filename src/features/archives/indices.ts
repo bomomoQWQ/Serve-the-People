@@ -1,7 +1,7 @@
 /**
  * 档案局 — 9 维索引
  * 构建、存储、查询 9 维度索引。
- * Layout: .servethepeople/archives/indices/index.json
+ * Layout: ~/.servethepeople/archives/indices/index.json
  *
  * 9 个维度：
  * ① 任务类型    ② 教训分类    ③ 严重程度

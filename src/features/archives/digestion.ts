@@ -1,7 +1,7 @@
 /**
  * 档案局 — 技能消化追踪
  * 追踪各部委对红头文件的学习消化状态。
- * Layout: .servethepeople/archives/digestion.json
+ * Layout: ~/.servethepeople/archives/digestion.json
  */
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"

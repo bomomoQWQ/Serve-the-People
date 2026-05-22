@@ -3,16 +3,8 @@ import type { JianweiMonitor } from "./hooks/jianwei-monitor"
 
 /**
  * Hook composition factory.
- *
- * Wraps the raw plugin hooks with enrichment layers:
- *   1. 国家监委 heartbeat monitoring — injects stall detection into the
- *      event hook to track workgroup task liveness.
- *   2. (Phase 5+) ToolGuard hooks (self-review checks)
- *   3. (Phase 5+) Transform hooks (workgroup context injector)
- *   4. (Phase 5+) Continuation hooks
- *   5. (Phase 5+) Skill hooks (skill auto-reminder)
- *
- * When no monitor is provided the hooks are returned as-passed.
+ * Wraps the raw plugin hooks with enrichment layers,
+ * currently only 国家监委 heartbeat monitoring.
  */
 export function createHooks(
   hooks: Hooks,

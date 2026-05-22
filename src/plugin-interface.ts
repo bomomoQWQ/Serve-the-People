@@ -105,19 +105,13 @@ export function createPluginInterface(
     },
 
     /** Tool pre-execution guards */
-    "tool.execute.before": async (_ctx) => {
-      // Phase 5+: self-review check gates
-    },
+    "tool.execute.before": async (_ctx) => {},
 
     /** Tool post-execution hooks */
-    "tool.execute.after": async (_ctx) => {
-      // Phase 5+: validation hooks
-    },
+    "tool.execute.after": async (_ctx) => {},
 
     /** System message transform */
-    "experimental.chat.system.transform": async (_ctx) => {
-      // Phase 3+: workgroup context injection
-    },
+    "experimental.chat.system.transform": async (_ctx) => {},
 
     /** Messages transform — mailbox injection for workgroup members */
     "experimental.chat.messages.transform": messagesTransform

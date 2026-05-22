@@ -3,7 +3,7 @@
  * 对所有归档教训进行交叉分析，发现系统性问题模式。
  * - 同一分类 ≥ 3 次 → 建议发红头
  * - 同一 phase 高频卡顿 → 建议调整编制
- * - 生成《若干问题》草案 → 写入 .servethepeople/archives/drafts/
+ * - 生成《若干问题》草案 → 写入 ~/.servethepeople/archives/drafts/
  */
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs"

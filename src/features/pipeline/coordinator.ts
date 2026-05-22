@@ -181,7 +181,7 @@ function buildFagaiweiQaContinuePrompt(task: PipelineTask, answer: string): stri
 function buildFagaiweiPlanPrompt(task: PipelineTask): string {
   return `\n<!-- SERVE-THE-PEOPLE PIPELINE: PLANNING -->\n` +
     `[系统指令] 需求已澄清（或Q&A用尽）。任务ID: ${task.taskId}。\n` +
-    `请制定执行方案：拆解phase、建议编制、输出到 .omo/plans/${task.taskId}.md。`
+    `请制定执行方案：拆解phase、建议编制。`
 }
 
 function buildPlanReviewPrompt(task: PipelineTask): string {

@@ -3,7 +3,7 @@
  * Tracks the current step and transitions between them.
  */
 
-import { mkdirSync, existsSync, readFileSync, writeFileSync } from "node:fs"
+import { mkdirSync, existsSync, readFileSync, writeFileSync, rmSync } from "node:fs"
 
 export enum PipelineState {
   IDLE = "IDLE", INTAKE = "INTAKE", QA = "QA",
@@ -74,4 +74,10 @@ export function attachWorkgroup(taskId: string, workgroupId: string): PipelineTa
   task.updatedAt = new Date().toISOString()
   writeFileSync(taskPath(taskId), JSON.stringify(task, null, 2))
   return task
+}
+
+/** Clean up pipeline state file when task is complete */
+export function cleanupPipelineTask(taskId: string): void {
+  const path = taskPath(taskId)
+  try { if (existsSync(path)) rmSync(path) } catch { /* best effort */ }
 }

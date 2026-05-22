@@ -1,11 +1,8 @@
 /**
  * Manager creation factory.
- * Phase 1 will add BackgroundManager for async sub-agent execution.
- * For now, returns empty managers object.
+ * Currently no managers required — workgroup/mailbox/tasklist are file-based.
  */
-export interface PluginManagers {
-  // Phase 1: backgroundManager: BackgroundManager
-}
+export interface PluginManagers {}
 
 export function createManagers(): PluginManagers {
   return {}
