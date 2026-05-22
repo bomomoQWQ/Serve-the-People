@@ -5,6 +5,7 @@ import { createSessionManagerTools } from "./tools/session-manager"
 import { createDelegateTask } from "./tools/delegate-task"
 import { createWorkgroupTools } from "./tools/workgroup/tools"
 import { createDanganjuTools } from "./tools/danganju/tools"
+import { createShenjishuTools } from "./tools/shenjishu/tools"
 import { createBackgroundOutput, createBackgroundCancel } from "./tools/background-task"
 import { createSkillTool } from "./tools/skill"
 import { createSkillMcpTool } from "./tools/skill-mcp"
@@ -35,6 +36,9 @@ export function createTools(ctx: PluginInput): Record<string, ToolDefinition> {
 
   // Archive (档案局) tools
   Object.assign(tools, createDanganjuTools())
+
+  // Audit (审计署) tools
+  Object.assign(tools, createShenjishuTools())
 
   // Background task tools
   Object.assign(tools, {
