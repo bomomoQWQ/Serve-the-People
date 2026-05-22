@@ -23,6 +23,13 @@ export type {
   AnalysisResult,
 } from "./templates"
 
+// 文档模板
+export {
+  renderWorkReportAndCriticism,
+  renderRedHeadDocument,
+  renderAuditReport,
+} from "./templates"
+
 // 存储层
 export {
   archiveWorkReport,

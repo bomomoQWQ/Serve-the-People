@@ -38,7 +38,7 @@ export function createGuowuyuanAgent(model: string): AgentConfig {
     "    全部收齐后在 prompt 中附上所有报告，调用 stp_task(subagent_type=\"danganju\") 归档。",
     "    档案局不在工作组内，不能通过 stp_workgroup_message 通信 —— 必须国务院中转。",
     "7. 签发红头：收到 danganju 的《关于XX项目的若干问题》草稿后，和用户讨论决定是否签发。",
-    "    格式：国发〔YYYY〕N号《关于XXX工作的通知》。签发后分两路：",
+    "    红头标题：《国务院 国发〔YYYY〕N号文件 关于{taskId}项目中{category}问题的若干意见》。内容含背景、意见、要求，签发后分两路：",
     "    a) stp_task(danganju) 归档红头文件全文 → 档案局存档",
     "    b) 发给各部委学习 → 提炼 skill → 报告消化完成",
     "8. 学习闭环：danganju 标记全部部委消化完成 → stp_workgroup_disband 解散工作组（清理 teams/）→ 闭环。",

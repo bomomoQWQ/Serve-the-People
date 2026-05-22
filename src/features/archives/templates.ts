@@ -148,3 +148,169 @@ export interface AnalysisResult {
   generatedAt: string
   summary: string
 }
+
+// ─── 文档模板 ─────────────────────────────────────────────────────────
+
+/** 渲染《(部委)对(TASK-ID)的工作报告与自我批评》*/
+export function renderWorkReportAndCriticism(
+  ministry: string,
+  taskId: string,
+  report: Omit<WorkReport, "workId" | "createdAt"> & { createdAt?: string },
+  criticisms: Omit<SelfCriticism, "workId" | "ministry" | "createdAt">[],
+): string {
+  const lines: string[] = [
+    `# ${ministry}对 ${taskId} 的工作报告与自我批评`,
+    "",
+    `日期：${report.createdAt ?? new Date().toISOString().slice(0, 10)}`,
+    "",
+    "---",
+    "",
+    "## 一、工作报告",
+    "",
+    ...renderOutputs(report.outputs),
+    ...renderTimeline(report.timeline),
+    ...renderCollaborations(report.collaborations),
+    "",
+    "---",
+    "",
+    "## 二、自我批评",
+    "",
+    ...(criticisms.length === 0 ? ["本月无自我批评事项。"] : criticisms.flatMap(renderCriticism)),
+  ]
+  return lines.join("\n")
+}
+
+function renderOutputs(outputs: WorkReportOutput[]): string[] {
+  if (outputs.length === 0) return ["（无产出记录）"]
+  return ["### 1.1 产出清单", "", ...outputs.map(o => `- **${o.filePath}**：${o.summary}`)]
+}
+
+function renderTimeline(timeline: WorkReportTimelineEntry[]): string[] {
+  if (timeline.length === 0) return []
+  return [
+    "### 1.2 时间线",
+    "",
+    ...timeline.map(t =>
+      `- [${t.startTime} → ${t.endTime ?? "至今"}] **${t.phase}** ${t.smooth ? "✅ 顺利" : "⚠️ 卡顿"}${t.notes ? ` — ${t.notes}` : ""}`
+    ),
+  ]
+}
+
+function renderCollaborations(collabs: WorkReportCollaboration[]): string[] {
+  if (collabs.length === 0) return []
+  return [
+    "### 1.3 协作记录",
+    "",
+    ...collabs.map(c =>
+      `- **${c.ministry}**：${c.interaction}${c.hadWaiting ? " （有等待）" : ""}`
+    ),
+  ]
+}
+
+function renderCriticism(c: Omit<SelfCriticism, "workId" | "ministry" | "createdAt">, index: number): string[] {
+  return [
+    `### 2.${index + 1} ${c.problemDescription.slice(0, 60)}`,
+    "",
+    `- **问题描述**：${c.problemDescription}`,
+    `- **根因分类**：${c.rootCause}`,
+    `- **严重程度**：${c.severity}`,
+    `- **发生阶段**：${c.phase}`,
+    `- **改进建议**：`,
+    ...(c.improvementSuggestions.map(s => `  - ${s}`)),
+  ]
+}
+
+/** 渲染《国务院 (YYYY) NN号文件 关于(TASK-ID)项目中的若干问题的意见》*/
+export function renderRedHeadDocument(
+  year: number,
+  number: number,
+  taskId: string,
+  category: string,
+  lessons: string[],
+): string {
+  const code = `国发〔${year}〕${number}号`
+  const lines = [
+    `# ${code}`,
+    `# 关于 ${taskId} 项目中${category}问题的若干意见`,
+    "",
+    `国务院 ${year}年${String(new Date().getMonth() + 1).padStart(2, "0")}月${String(new Date().getDate()).padStart(2, "0")}日`,
+    "",
+    "---",
+    "",
+    "## 背景",
+    "",
+    `工作组 ${taskId} 在执行过程中暴露出以下${category}相关问题：`,
+    "",
+    ...lessons.map((l, i) => `${i + 1}. ${l}`),
+    "",
+    "## 意见",
+    "",
+    "（由国务院根据档案局《若干问题》草案和用户讨论后填写）",
+    "",
+    "## 要求",
+    "",
+    "1. 有关部门应在收到本文件后及时组织学习，将意见转化为 skill。",
+    "2. 下一次工作中自动加载相应 skill，防止同类问题再次发生。",
+    "3. 档案局负责追踪各部委对意见的消化情况。",
+    "",
+    "---",
+    "",
+    "签发：国务院",
+  ]
+  return lines.join("\n")
+}
+
+/** 渲染《对(TASK-ID)项目的审计报告》*/
+export function renderAuditReport(
+  taskId: string,
+  round: number,
+  passed: boolean,
+  failures: string[],
+): string {
+  const lines = [
+    `# 对 ${taskId} 项目的审计报告`,
+    "",
+    `验收轮次：第 ${round}/3 轮`,
+    `时间：${new Date().toISOString()}`,
+    "",
+    "---",
+    "",
+    `## 验收结果：${passed ? "✅ 通过" : "❌ 不合格"}`,
+    "",
+  ]
+
+  if (passed) {
+    lines.push(
+      "经逐项验收，功能完整性、文档一致性、用户路径均通过检查。",
+      "",
+      "验收清单：",
+      "- [x] README 安装流程能跑通",
+      "- [x] 核心功能正常运行",
+      "- [x] 异常输入不崩溃",
+      "- [x] 输出与文档一致",
+      "- [x] API 端点文档一致性",
+      "- [x] 功能完整性",
+    )
+  } else if (round >= 3) {
+    lines.push(
+      `以下 ${failures.length} 项经 ${round} 轮仍不合格，标记已知缺陷放行：`,
+      "",
+      ...failures.map((f, i) => `${i + 1}. ${f}`),
+    )
+  } else {
+    lines.push(
+      `以下 ${failures.length} 项不合格，退回整改后重新验收：`,
+      "",
+      ...failures.map((f, i) => `${i + 1}. ${f}`),
+    )
+  }
+
+  lines.push(
+    "",
+    "---",
+    "",
+    "审计署",
+    new Date().toISOString().slice(0, 10),
+  )
+  return lines.join("\n")
+}
