@@ -6,6 +6,7 @@ import { createTools } from "../create-tools"
 import { createHooks } from "../create-hooks"
 import { createManagers } from "../create-managers"
 import { createPluginInterface } from "../plugin-interface"
+import { createWorkgroupIdleWake } from "../hooks/workgroup-idle-wake"
 import { JianweiMonitor } from "../hooks/jianwei-monitor"
 import type { AgentConfig } from "@opencode-ai/sdk"
 
@@ -42,12 +43,16 @@ export function createPluginModule(): PluginModule {
     const mcps = createBuiltinMcps(disabledMcps)
     const tools = createTools(input)
 
+    // Workgroup idle-wake: detects idle workgroup member sessions and nudges them
+    const idleWake = createWorkgroupIdleWake({ client: input.client })
+
     const rawHooks = createPluginInterface(
       input,
       pluginConfig,
       mcps,
       tools,
       builtinAgents,
+      idleWake,
     )
 
     // 国家监委: heartbeat monitoring, stall detection, retry, escalation

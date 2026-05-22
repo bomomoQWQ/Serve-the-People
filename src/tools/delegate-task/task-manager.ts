@@ -4,7 +4,6 @@
  * Uses OpenCode SDK's session.create() and session.prompt() APIs
  * to spawn real sub-agent child sessions.
  */
-
 import type { PluginInput } from "@opencode-ai/plugin"
 
 export interface TaskInput {
@@ -24,15 +23,17 @@ export interface TaskResult {
   error?: string
 }
 
+type SessionPromptOpts = {
+  path: { id: string }
+  body: { agent?: string; parts: Array<{ type: "text"; text: string }> }
+}
+
 type OpenCodeClient = PluginInput["client"] & {
   session?: {
     create?: (opts: {
       body: { parentID?: string; title: string; agent?: string }
     }) => Promise<{ data?: { id: string }; error?: unknown }>
-    prompt?: (opts: {
-      path: { id: string }
-      body: { agent?: string; parts: Array<{ type: "text"; text: string }> }
-    }) => Promise<{ data?: unknown; error?: unknown }>
+    prompt?: (opts: SessionPromptOpts) => Promise<{ data?: unknown; error?: unknown }>
     messages?: (opts: { path: { id: string } }) => Promise<{
       data?: Array<{ info?: { role?: string }; parts?: Array<{ type?: string; text?: string }> }>
       error?: unknown
@@ -48,7 +49,7 @@ export class TaskManager {
     this.client = client as unknown as OpenCodeClient
   }
 
-  /** Spawn a sub-agent in a real child session */
+  /** Spawn a sub-agent in a real child session — waits for completion */
   async launch(input: TaskInput): Promise<TaskResult> {
     const { agent, prompt, description, parentSessionId } = input
 
@@ -76,6 +77,48 @@ export class TaskManager {
     const task: TaskResult = { id: sessionId, sessionId, agent, status: "running", prompt }
     this.tasks.set(sessionId, task)
     return task
+  }
+
+  /** Spawn a sub-agent session — returns immediately without polling */
+  async launchAsync(input: TaskInput): Promise<TaskResult> {
+    const { agent, prompt, description, parentSessionId } = input
+
+    if (!this.client.session?.create) {
+      return { id: "", sessionId: "", agent, status: "error", prompt, error: "Session create API not available" }
+    }
+
+    const createResult = await this.client.session.create({
+      body: { parentID: parentSessionId, title: `${description ?? "Sub-agent task"} (@${agent})`, agent },
+    })
+
+    if (createResult.error || !createResult.data?.id) {
+      return { id: "", sessionId: "", agent, status: "error", prompt, error: `Session create failed: ${String(createResult.error ?? "no ID")}` }
+    }
+
+    const sessionId = createResult.data.id
+
+    // Fire the prompt but don't wait for completion
+    if (this.client.session.prompt) {
+      this.client.session.prompt({
+        path: { id: sessionId },
+        body: { agent, parts: [{ type: "text", text: prompt }] },
+      }).catch(() => {
+        // Fire-and-forget — polling or idle-wake handles follow-up
+      })
+    }
+
+    const task: TaskResult = { id: sessionId, sessionId, agent, status: "running", prompt }
+    this.tasks.set(sessionId, task)
+    return task
+  }
+
+  /** Send a follow-up prompt to an existing session (used by idle-wake) */
+  async sendPrompt(sessionId: string, agent: string, text: string): Promise<void> {
+    if (!this.client.session?.prompt) return
+    await this.client.session.prompt({
+      path: { id: sessionId },
+      body: { agent, parts: [{ type: "text", text }] },
+    })
   }
 
   /** Poll a session for completion */
@@ -110,12 +153,6 @@ export class TaskManager {
   }
 
   getTask(sessionId: string): TaskResult | undefined { return this.tasks.get(sessionId) }
-  enqueue(input: TaskInput): TaskResult {
-    const id = `task-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`
-    const task: TaskResult = { id, sessionId: id, agent: input.agent, status: "pending", prompt: input.prompt }
-    this.tasks.set(id, task)
-    return task
-  }
   cancel(taskId: string): boolean {
     const task = this.tasks.get(taskId)
     if (!task || task.status === "completed") return false

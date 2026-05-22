@@ -19,6 +19,7 @@ import {
 } from "./state"
 import { createTask } from "./tasklist"
 import { sendMessage } from "./mailbox"
+import { registerSession } from "./session-registry"
 
 /** A member to spawn in the workgroup */
 export interface SpawnMember {
@@ -96,13 +97,24 @@ export async function createWorkgroupSession(
     let sessionId: string | undefined
     try {
       const prompt = buildSpawnPrompt(member, name, teamId, task.id, plan)
-      const result = manager.enqueue({
+      const result = await manager.launchAsync({
         agent: member.agent,
         prompt,
         description: `${member.agent}: ${member.task}`,
       })
 
-      sessionId = result.id
+      if (result.status === "error") {
+        throw new Error(result.error ?? "Launch failed")
+      }
+
+      sessionId = result.sessionId
+      // Register for mailbox injection + idle-wake
+      registerSession(result.sessionId, {
+        teamId,
+        agent: member.agent,
+        memberName: `${member.agent}:${member.role}`,
+      })
+
       spawned.push({
         agent: member.agent,
         role: member.role,
@@ -145,7 +157,13 @@ function buildSpawnPrompt(
     `团队ID：${teamId}`,
     `任务ID：${taskId}`,
     "",
-    "请检查你的邮箱（.servethepeople/teams/）获取后续指令和协作消息。",
+    "## 工作组模式",
+    "你是工作组的长活成员。消息通过 mailbox 自动投递，idle 时自动唤醒。",
+    "- 执行当前任务完毕后报告结果",
+    "- 使用 workgroup_task 认领并更新你的任务状态",
+    "- 使用 workgroup_message 发送报告给其他成员",
+    "- 任务完成后 idle 等待新消息（系统会自动唤醒你）",
+    "- 不要主动退出，你是长活会话",
     "",
     "---",
     "## 执行方案",

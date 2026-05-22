@@ -25,6 +25,7 @@ import {
   updateTask,
 } from "../../features/workgroup/tasklist"
 import { sendMessage, pollInbox } from "../../features/workgroup/mailbox"
+import { registerSession } from "../../features/workgroup/session-registry"
 
 /**
  * Create all workgroup-related tools.
@@ -86,15 +87,25 @@ export function createWorkgroupTools(ctx: PluginInput): Record<string, ToolDefin
           body: JSON.stringify({ task: memberTask, description, taskId: created.id, teamId, role }),
         })
 
-        // Enqueue sub-agent task
+        // Launch sub-agent session (async, real session creation)
         try {
-          const result = manager.enqueue({
+          const result = await manager.launchAsync({
             agent,
             prompt: buildWorkgroupPrompt(agent, role, memberTask, description, name, teamId, created.id, plan),
             description: `${agent}: ${memberTask}`,
           })
 
-          results.push(`✅ ${agent} (${role}): task=${created.id} queued=${result.id}`)
+          if (result.status === "error") {
+            errors.push(`❌ ${agent} (${role}): ${result.error}`)
+          } else {
+            // Register session for mailbox injection + idle-wake
+            registerSession(result.sessionId, {
+              teamId,
+              agent,
+              memberName: `${agent}:${role}`,
+            })
+            results.push(`✅ ${agent} (${role}): task=${created.id} session=${result.sessionId.slice(0, 8)}`)
+          }
         } catch (e) {
           errors.push(`❌ ${agent} (${role}): ${e instanceof Error ? e.message : String(e)}`)
         }
@@ -349,7 +360,13 @@ function buildWorkgroupPrompt(
     `团队ID: ${teamId}`,
     `任务ID: ${taskId}`,
     "",
-    "请检查你的邮箱（.servethepeople/teams/ 目录）获取协作消息。",
+    "## 工作组模式",
+    "你是工作组的长活成员。消息通过 mailbox 自动投递，idle 时自动唤醒。",
+    "- 执行当前任务完毕后报告结果",
+    "- 使用 workgroup_task 认领并更新你的任务状态",
+    "- 使用 workgroup_message 发送报告给其他成员",
+    "- 任务完成后 idle 等待新消息（系统会自动唤醒你）",
+    "- 不要主动退出，你是长活会话",
     "",
     "---",
     "## 执行方案",
