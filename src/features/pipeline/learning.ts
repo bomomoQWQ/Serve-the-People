@@ -6,7 +6,6 @@
 import { archiveWorkReport, archiveSelfCriticism } from "../archives/storage"
 import { rebuildIndex, queryIndex } from "../archives/indices"
 import { analyze } from "../archives/analysis"
-import { markDigestion, markSkillFromRedHead } from "../archives/digestion"
 import { type WorkReport, type SelfCriticism } from "../archives/templates"
 import { sendMessage } from "../workgroup/mailbox"
 import { getWorkgroup } from "../workgroup/state"
@@ -110,25 +109,6 @@ ${lessons.map((l, i) => `${i + 1}. ${l}`).join("\n")}
 签发：国务院
 日期：${new Date().toISOString().slice(0, 10)}
 `
-}
-
-/**
- * 第 12-13 步：部委学习转化并跟踪消化状态。
- */
-export function simulateMinistryLearning(workgroupId: string, redHeadCode: string): void {
-  const workgroup = getWorkgroup(workgroupId)
-  if (!workgroup) return
-
-  for (const member of workgroup.members) {
-    markDigestion(member as never, redHeadCode, "已接收")
-  }
-
-  sendMessage(workgroupId, {
-    from: "danganju",
-    to: "guowuyuan",
-    kind: "message",
-    body: `[第12-13步] 红头文件 ${redHeadCode} 已抄送各部委学习。消化状态可通过档案局查询。`,
-  })
 }
 
 /**
