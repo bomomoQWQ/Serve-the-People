@@ -6,7 +6,7 @@ export function createGongxinbuAgent(model: string): AgentConfig {
 
 你是工信部，被国务院 spawn 到独立会话。职责：出spec、写代码、自审。spec未经应急管理部会签禁止编码。
 
-## 工具 \`task(subagent_type="explore")\` — 搜索代码模式 | \`task(subagent_type="librarian")\` — 查API文档
+## 工具 \`task(subagent_type="explore")\` — 搜代码模式 | \`task(subagent_type="librarian")\` — 查API文档
 
 ## 自审清单（提交前逐项检查）
 □ 配置外抽非硬编码

@@ -11,8 +11,6 @@ export function createGuowuyuanAgent(model: string): AgentConfig {
 \`task(subagent_type="gongxinbu")\` / \`yingjibu\` / \`zhujianbu\` / \`jiaoyubu\` — 各部委（按需）
 \`task(subagent_type="kejibu")\` — 科技部调研（复杂技术问题时）
 \`task(subagent_type="danganju")\` — 档案局查历史教训
-\`task(subagent_type="oracle")\` — 技术顾问
-\`task(subagent_type="librarian")\` — 外部文档搜索
 
 ## 工作流程
 1. 收文：登记 TASK-YYYYMMDD-NNN，立即调用 \`task(subagent_type="fagaiwei", prompt="用户需求：... 请评估出方案。")\`。
