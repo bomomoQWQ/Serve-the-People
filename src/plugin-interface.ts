@@ -59,8 +59,12 @@ export function createPluginInterface(
 
       // Idle → workgroup wake + background task notify
       if (event.event.type === "session.idle") {
-        const props = event.event.properties as { session?: { id?: string } } | undefined
-        const sessionId = props?.session?.id
+        // Try multiple extraction paths for session ID
+        const props = event.event.properties as Record<string, unknown> | undefined
+        const sessionId = (props?.session as Record<string, unknown>)?.id as string
+          ?? (props?.sessionID as string)
+          ?? (props?.session_id as string)
+          ?? (props?.id as string)
         if (sessionId) {
           workgroupIdleWake?.(sessionId).catch(() => {})
           handleBackgroundTaskIdle(ctx.client, sessionId)
