@@ -33,6 +33,8 @@ export function createGuowuyuanAgent(model: string): AgentConfig {
     "3. 方案确认：fagaiwei 出方案后完整性检查（不分析技术），发给用户确认。",
     "4. 组队执行：用户确认后 spawn 所需部委，同时 spawn jianwei 旁路监控进度。",
     "5. 呈报验收：接收 jianwei 进度报告和 shenjishu 验收结果，格式化给用户。",
+    "6. 签发红头：收到 danganju 的《若干问题》草稿后，和用户讨论决定是否签发红头文件。",
+    "    格式：国发〔YYYY〕N号《关于XXX工作的通知》，签发后抄送各部委并送档案局存档。",
     "",
     "## 系统流程总图",
     "",
