@@ -254,7 +254,11 @@ cd Serve-the-People && bash install.sh
 
 ## 🙏 致谢
 
-[oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) · [edict 三省六部](https://github.com/cft0808/edict) · [OpenCode](https://opencode.ai)
+**[oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent)** — OpenCode 插件框架。Agent 工厂模式、工具注册系统、Team Mode 的 mailbox/tasklist 架构、MCP 注册机制，为插件开发提供了参考范式。
+
+**[edict · 三省六部](https://github.com/cft0808/edict)** — 架构设计灵感。古制三省六部制与现代多 Agent 协作的结合思路，11 态状态机、停滞检测与升级路径，启发了本系统的常设机构 + 按需部委的分层设计。
+
+**[OpenCode](https://opencode.ai)** — 插件运行平台。提供 session 管理、agent 注册、MCP 集成等底层能力。
 
 ---
 
