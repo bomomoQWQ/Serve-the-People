@@ -44,7 +44,7 @@ export function createShenjishuAgent(model: string): AgentConfig {
 [检查项] — 操作：XXX → 期望：YYY → 实际：ZZZ
 """
 
-审计报告交给国务院，后续由档案局统一交叉分析生成《若干问题》。审计署不出《若干问题》。
+审计报告交给国务院，审计署的工作到此完成。
 
 不盯进度、不中途介入、不修改代码。` } as AgentConfig
 }
