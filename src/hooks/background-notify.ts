@@ -51,7 +51,9 @@ export async function handleBackgroundTaskIdle(
 Use \`stp_background_output(task_id="${entry.sessionId}")\` to retrieve each result.
 </system-reminder>`
 
-  // Try push via promptAsync first
+  // Wait for parent session to settle, then try push
+  await new Promise(r => setTimeout(r, 2000))
+
   try {
     const api = client.session as unknown as { promptAsync?: (opts: unknown) => Promise<unknown> }
     if (api.promptAsync) {
