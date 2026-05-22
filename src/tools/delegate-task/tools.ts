@@ -12,29 +12,31 @@ export function createDelegateTask(ctx: PluginInput): Record<string, ToolDefinit
 
   const taskTool: ToolDefinition = tool({
     description:
-      "Spawn a sub-agent in a real child session. The agent runs independently " +
-      "and results are returned when complete. " +
-      "Use subagent_type: oracle, librarian, explore, fagaiwei, gongxinbu, kejibu, etc.",
+      "Spawn a sub-agent in a real child session. " +
+      "Set run_in_background=true to fire-and-forget (use stp_background_output to collect later). " +
+      "Set run_in_background=false to block until completion. " +
+      "Use subagent_type: canshishi, xinxizhongxin, fenxiban, fagaiwei, gongxinbu, kejibu, etc.",
     args: {
       subagent_type: tool.schema.string()
         .describe("Agent to spawn"),
       prompt: tool.schema.string().describe("Task prompt to send"),
       description: tool.schema.string().optional().describe("Short description"),
+      run_in_background: tool.schema.boolean().optional()
+        .describe("true = fire-and-forget (use stp_background_output later). false = block until done. Default false."),
     },
     execute: async (args, context) => {
       const agent = args.subagent_type as string
       const prompt = args.prompt as string
+      const runInBackground = (args.run_in_background as boolean) ?? false
       if (!agent) return "Error: subagent_type required."
       if (!prompt) return "Error: prompt required."
       if (!agentSources[agent as keyof typeof agentSources]) {
         return `Error: Unknown agent "${agent}". Available: ${Object.keys(agentSources).join(", ")}`
       }
 
-      // Get parent session ID from tool context
       const ctx = context as Record<string, unknown>
       const parentSessionId = (ctx.sessionID ?? ctx.session_id ?? "") as string
 
-      // Spawn real child session
       const task = await manager.launch({
         agent,
         prompt,
@@ -46,10 +48,15 @@ export function createDelegateTask(ctx: PluginInput): Record<string, ToolDefinit
         return `Error: ${task.error}`
       }
 
-      // Poll for completion
+      if (runInBackground) {
+        // Fire-and-forget: return task ID immediately, collect via stp_background_output
+        return `Task dispatched: ${task.sessionId}\nAgent: ${agent}\nUse stp_background_output(task_id="${task.sessionId}") to collect results.`
+      }
+
+      // Sync mode: poll for completion
       const result = await manager.poll(task.sessionId)
       if (result.status === "completed") {
-        return result.output ?? "Task completed with no output."
+        return result.output ?? "(no output)"
       }
       return `Error: ${result.error ?? "Unknown error"}`
     },

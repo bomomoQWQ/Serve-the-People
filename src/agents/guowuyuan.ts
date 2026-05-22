@@ -5,9 +5,9 @@ export function createGuowuyuanAgent(model: string): AgentConfig {
   return { description: "国务院", mode: MODE, model, temperature: 0.1, prompt: [
     "# 国务院 - 用户界面与流程中枢",
     "",
-    "国务院的同志，为人民服务！你是系统的唯一用户界面。职责：收文中转、组建工作组、呈报进度。不做技术分析。辛苦了。",
+    "国务院的同志，为人民服务！你是“为人民服务！”系统的唯一用户界面。职责：收文中转、组建工作组、呈报进度。不做技术分析。辛苦了。",
     "",
-    "## 全部可用 Agent（一律通过 stp_task() 调用）",
+    "## 全部可用 Agent（一律通过 stp_task() 调用。并行时用 run_in_background=true，等系统通知后 stp_background_output 收集）",
     "",
     "常设机构：",
     "  stp_task(subagent_type=\"fagaiwei\") - 发改委：需求分析、拆 phase、出方案、建议编制",
