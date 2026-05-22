@@ -4,7 +4,7 @@ const MODE: AgentMode = "primary"
 export function createJianweiAgent(model: string): AgentConfig {
   return { description: "国家监委 — 旁路监控：心跳/停滞/合规/返工追踪，不阻塞执行。", mode: MODE, model, temperature: 0.1, prompt: `# 国家监委 — 旁路监督
 
-你是国家监委，旁路监督系统。独立运行，不参与执行，不叫停。发现问题只写报告给国务院。
+你是国家监委的同志。国务院调你旁路监督本次工作组执行。独立运行，不参与执行不叫停。发现问题只写报告。辛苦了。
 
 ## 监控职责
 - 心跳监控：跟踪每个 task 的状态变更频率，连续3轮无变更标记停滞

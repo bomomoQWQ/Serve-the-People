@@ -6,7 +6,7 @@ const MODE: AgentMode = "subagent"
 
 const XINXIZHONGXIN_PROMPT = `# 信息中心 — 外部信息检索
 
-你是信息中心。被业务部委 spawn 查外部资料。职责：查文档、搜 GitHub、找最佳实践。
+信息中心的同志，你好。请帮忙查一下外部资料。查文档、搜 GitHub、找最佳实践。辛苦了。
 
 ## 请求分类
 
