@@ -6,6 +6,6 @@ export type { SessionEntry } from "./session-registry"
 
 export { sendMessage, pollInbox, ackMessage } from "./mailbox"
 export { createTask, listTasks, getTask, claimTask, updateTask } from "./tasklist"
-export { createWorkgroup, getWorkgroup, updateWorkgroupStatus } from "./state"
+export { createWorkgroup, getWorkgroup, updateWorkgroupStatus, cleanupWorkgroup } from "./state"
 export { createWorkgroupSession, getWorkgroupSummary } from "./spawn"
 export { registerSession, unregisterSession, lookupSession } from "./session-registry"

@@ -7,6 +7,7 @@
  *   - workgroup_list    — List all active workgroups
  *   - workgroup_task    — Assign a task within a workgroup
  *   - workgroup_message — Send a message to a workgroup member
+ *   - workgroup_disband — Cleanup workgroup temp data
  */
 
 import { tool, type ToolDefinition } from "@opencode-ai/plugin/tool"
@@ -330,12 +331,32 @@ export function createWorkgroupTools(ctx: PluginInput): Record<string, ToolDefin
     },
   })
 
+  // ─── workgroup_disband — cleanup workgroup on completion ───
+  const workgroupDisband: ToolDefinition = tool({
+    description:
+      "解散工作组并清理项目级临时数据（状态/任务/邮箱/审计记录）。保留全局 archives 和 skills。",
+    args: {
+      team_id: tool.schema.string()
+        .describe("工作组 ID"),
+    },
+    execute: async (args) => {
+      const teamId = args.team_id as string
+      const { cleanupWorkgroup } = await import("../../features/workgroup/state")
+      const cleaned = cleanupWorkgroup(teamId)
+      if (cleaned) {
+        return `✅ 工作组 ${teamId} 已解散，临时数据已清理。archives 和 skills 不受影响。`
+      }
+      return `未找到工作组 ${teamId}，可能已被清理。`
+    },
+  })
+
   return {
     workgroup_create: workgroupCreate,
     workgroup_status: workgroupStatus,
     workgroup_list: workgroupList,
     workgroup_task: workgroupTask,
     workgroup_message: workgroupMessage,
+    workgroup_disband: workgroupDisband,
   }
 }
 

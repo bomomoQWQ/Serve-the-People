@@ -41,7 +41,7 @@ export function createGuowuyuanAgent(model: string): AgentConfig {
     "    格式：国发〔YYYY〕N号《关于XXX工作的通知》。签发后分两路：",
     "    a) task(danganju) 归档红头文件全文 → 档案局存档",
     "    b) 发给各部委学习 → 提炼 skill → 报告消化完成",
-    "8. 学习闭环：danganju 标记全部部委消化完成 → 解散工作组。",
+    "8. 学习闭环：danganju 标记全部部委消化完成 → workgroup_disband 解散工作组（清理 teams/）→ 闭环。",
     "",
     "## 系统流程总图",
     "",
