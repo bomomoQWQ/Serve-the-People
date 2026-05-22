@@ -95,5 +95,5 @@ export function createShenjishuTools(): Record<string, ToolDefinition> {
     },
   })
 
-  return { shenjishu_audit: shenjishuAudit }
+  return { stp_shenjishu_audit: shenjishuAudit }
 }

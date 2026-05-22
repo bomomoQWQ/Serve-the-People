@@ -61,8 +61,6 @@ cd Serve-the-People && bash install.sh    # Unix
 
 重启 OpenCode。配置文件 `.opencode/serve-the-people.jsonc` 自动生成。
 
-> ⚠️ 不要与 oh-my-openagent 共存。
-
 ---
 
 ## Agent
@@ -116,17 +114,17 @@ cd Serve-the-People && bash install.sh    # Unix
 
 ## 工具
 
-**工作组** `workgroup_create` `workgroup_status` `workgroup_task` `workgroup_message` `workgroup_disband`
+**工作组** `stp_workgroup_create` `stp_workgroup_status` `stp_workgroup_task` `stp_workgroup_message` `stp_workgroup_disband`
 
-**档案局** `danganju_archive` `danganju_query` `danganju_analyze` `danganju_draft` `danganju_digestion`
+**档案局** `stp_danganju_archive` `stp_danganju_query` `stp_danganju_analyze` `stp_danganju_draft` `stp_danganju_digestion`
 
-**审计署** `shenjishu_audit` — 自助读/写审计轮次
+**审计署** `stp_shenjishu_audit`
 
-**代码分析** `lsp_diagnostics` `lsp_symbols` `ast_grep_search` `ast_grep_replace` `edit` `grep` `glob`
+**代码分析** `stp_lsp_diagnostics` `stp_lsp_symbols` `stp_ast_grep_search` `stp_ast_grep_replace` `stp_edit` `stp_grep` `stp_glob`
 
-**Skill** `skill_write` `skill_list`
+**Skill** `stp_skill_write` `stp_skill_list`
 
-**会话** `task` `background_output` `background_cancel` `session_*`
+**会话** `stp_task` `stp_background_output` `stp_background_cancel` `stp_session_*`
 
 ---
 

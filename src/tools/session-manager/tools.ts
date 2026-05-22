@@ -121,9 +121,9 @@ export function createSessionManagerTools(ctx: PluginInput): Record<string, Tool
   })
 
   return {
-    session_list: sessionList,
-    session_read: sessionRead,
-    session_search: sessionSearch,
-    session_info: sessionInfo,
+    stp_session_list: sessionList,
+    stp_session_read: sessionRead,
+    stp_session_search: sessionSearch,
+    stp_session_info: sessionInfo,
   }
 }

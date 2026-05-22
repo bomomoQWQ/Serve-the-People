@@ -5,8 +5,8 @@
  *   - workgroup_create  — Create a new workgroup and spawn member agents
  *   - workgroup_status  — Get status of a workgroup
  *   - workgroup_list    — List all active workgroups
- *   - workgroup_task    — Assign a task within a workgroup
- *   - workgroup_message — Send a message to a workgroup member
+ *   - stp_workgroup_task    — Assign a task within a workgroup
+ *   - stp_workgroup_message — Send a message to a workgroup member
  *   - workgroup_disband — Cleanup workgroup temp data
  */
 
@@ -215,7 +215,7 @@ export function createWorkgroupTools(ctx: PluginInput): Record<string, ToolDefin
     },
   })
 
-  // ─── workgroup_task — task management ───
+  // ─── stp_workgroup_task — task management ───
   const workgroupTask: ToolDefinition = tool({
     description:
       "管理工作组内的任务：查看、认领、更新状态。",
@@ -285,7 +285,7 @@ export function createWorkgroupTools(ctx: PluginInput): Record<string, ToolDefin
     },
   })
 
-  // ─── workgroup_message — inter-member messaging ───
+  // ─── stp_workgroup_message — inter-member messaging ───
   const workgroupMessage: ToolDefinition = tool({
     description:
       "向工作组成员发送邮件消息，或查看收件箱。",
@@ -310,7 +310,7 @@ export function createWorkgroupTools(ctx: PluginInput): Record<string, ToolDefin
           if (!to) return "错误：需要提供收件人 to"
           if (!body) return "错误：需要提供消息正文 body"
           const msg = sendMessage(teamId, {
-            from: "workgroup_message_tool",
+            from: "stp_workgroup_message_tool",
             to,
             kind: "message",
             body,
@@ -351,12 +351,12 @@ export function createWorkgroupTools(ctx: PluginInput): Record<string, ToolDefin
   })
 
   return {
-    workgroup_create: workgroupCreate,
-    workgroup_status: workgroupStatus,
-    workgroup_list: workgroupList,
-    workgroup_task: workgroupTask,
-    workgroup_message: workgroupMessage,
-    workgroup_disband: workgroupDisband,
+    stp_workgroup_create: workgroupCreate,
+    stp_workgroup_status: workgroupStatus,
+    stp_workgroup_list: workgroupList,
+    stp_stp_workgroup_task: workgroupTask,
+    stp_stp_workgroup_message: workgroupMessage,
+    stp_workgroup_disband: workgroupDisband,
   }
 }
 
@@ -385,13 +385,13 @@ function buildWorkgroupPrompt(
     "你是工作组的长活成员。消息通过 mailbox 自动投递，idle 时自动唤醒。",
     "",
     "### 操作步骤",
-    "1. 认领任务：用 workgroup_task(action=\"claim\", task_id=\"...\") 认领分配给你的任务",
+    "1. 认领任务：用 stp_workgroup_task(action=\"claim\", task_id=\"...\") 认领分配给你的任务",
     "2. 执行任务：完成编码/测试/部署等实际工作",
-    "3. 报告结果：用 workgroup_message(to=\"协调者\", body=\"结果\") 发送工作成果",
-    "4. 标记完成：用 workgroup_task(action=\"update\", task_id=\"...\", status=\"completed\")",
-    "5. 验收通过后：提交工作报告和自我批评，用 workgroup_message 发给协调者",
+    "3. 报告结果：用 stp_workgroup_message(to=\"协调者\", body=\"结果\") 发送工作成果",
+    "4. 标记完成：用 stp_workgroup_task(action=\"update\", task_id=\"...\", status=\"completed\")",
+    "5. 验收通过后：提交工作报告和自我批评，用 stp_workgroup_message 发给协调者",
     "   （报告格式：做了什么、踩了什么坑、什么教训、什么改进建议）",
-    "6. 学习红头：收到红头文件后学习内容，提炼为 skill，用 workgroup_message 报告消化完成",
+    "6. 学习红头：收到红头文件后学习内容，提炼为 skill，用 stp_workgroup_message 报告消化完成",
     "7. 等待解散：全部部委消化完成后，国务院会解散工作组",
     "",
     "### 规则",

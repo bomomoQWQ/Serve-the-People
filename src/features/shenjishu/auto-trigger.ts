@@ -59,7 +59,7 @@ export async function runAudit(workgroupId: string): Promise<AuditResult> {
     kind: "message",
     body: [
       `审计验收触发（第 ${round}/3 轮）`,
-      "请国务院调用 task(subagent_type=\"shenjishu\") 执行验收。",
+      "请国务院调用 stp_task(subagent_type=\"shenjishu\") 执行验收。",
       "审计署可用 shenjishu_audit 工具自助读取当前轮次和历史失败项。",
       round >= 3 ? "此为最终轮，不合格项标记已知缺陷放行。" : "",
       "",

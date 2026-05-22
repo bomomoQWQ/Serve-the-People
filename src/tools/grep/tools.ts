@@ -55,5 +55,5 @@ export function createGrepTools(): Record<string, ToolDefinition> {
     },
   })
 
-  return { grep }
+  return { stp_grep: grep }
 }

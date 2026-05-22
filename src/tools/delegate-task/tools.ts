@@ -55,5 +55,5 @@ export function createDelegateTask(ctx: PluginInput): Record<string, ToolDefinit
     },
   })
 
-  return { task: taskTool }
+  return { stp_task: taskTool }
 }

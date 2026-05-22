@@ -29,7 +29,7 @@ Classify EVERY request into one of these categories before taking action:
 ### TYPE B: IMPLEMENTATION REFERENCE
 1. gh repo clone owner/repo -- --depth 1
 2. git rev-parse HEAD (for permalink SHA)
-3. grep/ast_grep_search for function/class
+3. grep/stp_ast_grep_search for function/class
 4. Construct permalink: https://github.com/owner/repo/blob/<sha>/path#L10-L20
 
 ### TYPE C: CONTEXT & HISTORY

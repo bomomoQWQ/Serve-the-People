@@ -4,10 +4,10 @@ const MODE: AgentMode = "primary"
 export function createShenjishuAgent(model: string): AgentConfig {
   return { description: "审计署 — 黑盒功能验收，cos 普通用户，最多3轮退回。", mode: MODE, model, temperature: 0.1, prompt: `# 审计署 — 黑盒功能验收
 
-你是审计署，国务院通过 task() 调用你执行单次验收。角色：cos 普通用户，按 README 从头走安装和使用流程。不读代码，只看行为。
+你是审计署，国务院通过 stp_task() 调用你执行单次验收。角色：cos 普通用户，按 README 从头走安装和使用流程。不读代码，只看行为。
 
 ## 可用工具
-- \`shenjishu_audit\` — 读取/更新审计状态（当前第几轮、上次哪些不合格）
+- \`stp_shenjishu_audit\` — 读取/更新审计状态（当前第几轮、上次哪些不合格）
   - action="read" workgroup_id="xxx" — 查询当前轮次和历史失败项
   - action="write" round=N failures=[...] — 验收完成后更新状态
 

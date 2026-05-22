@@ -260,10 +260,10 @@ export function createDanganjuTools(): Record<string, ToolDefinition> {
   })
 
   return {
-    danganju_archive: danganjuArchive,
-    danganju_query: danganjuQuery,
-    danganju_analyze: danganjuAnalyze,
-    danganju_draft: danganjuDraft,
-    danganju_digestion: danganjuDigestion,
+    stp_danganju_archive: danganjuArchive,
+    stp_danganju_query: danganjuQuery,
+    stp_danganju_analyze: danganjuAnalyze,
+    stp_danganju_draft: danganjuDraft,
+    stp_danganju_digestion: danganjuDigestion,
   }
 }

@@ -48,27 +48,27 @@ export function createTools(ctx: PluginInput): Record<string, ToolDefinition> {
 
   // LSP + AST-grep tools
   Object.assign(tools, {
-    lsp_diagnostics: createLspDiagnosticsTool(),
-    lsp_symbols: createLspSymbolsTool(),
-    ast_grep_search: createAstGrepSearchTool(),
-    ast_grep_replace: createAstGrepReplaceTool(),
-    edit: createHashlineEditTool(),
+    stp_lsp_diagnostics: createLspDiagnosticsTool(),
+    stp_lsp_symbols: createLspSymbolsTool(),
+    stp_ast_grep_search: createAstGrepSearchTool(),
+    stp_ast_grep_replace: createAstGrepReplaceTool(),
+    stp_edit: createHashlineEditTool(),
   })
 
   // Future: lsp_goto_definition / lsp_find_references / lsp_rename — require tsserver integration
 
   // Background task tools
   Object.assign(tools, {
-    background_output: createBackgroundOutput(taskManager),
-    background_cancel: createBackgroundCancel(taskManager),
+    stp_background_output: createBackgroundOutput(taskManager),
+    stp_background_cancel: createBackgroundCancel(taskManager),
   })
 
   // Skill tools
   Object.assign(tools, {
-    skill: createSkillTool(),
-    skill_mcp: createSkillMcpTool(ctx.client),
-    skill_write: createSkillWriteTool(),
-    skill_list: createSkillListTool(ctx.directory),
+    stp_skill: createSkillTool(),
+    stp_skill_mcp: createSkillMcpTool(ctx.client),
+    stp_skill_write: createSkillWriteTool(),
+    stp_skill_list: createSkillListTool(ctx.directory),
   })
 
   return tools

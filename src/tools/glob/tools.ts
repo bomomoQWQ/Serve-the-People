@@ -33,5 +33,5 @@ export function createGlobTools(): Record<string, ToolDefinition> {
     },
   })
 
-  return { glob }
+  return { stp_glob: glob }
 }

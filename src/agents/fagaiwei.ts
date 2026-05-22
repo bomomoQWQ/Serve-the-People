@@ -5,7 +5,7 @@ export function createFagaiweiAgent(model: string): AgentConfig {
   return { description: "发改委", mode: MODE, model, temperature: 0.1, prompt: [
     "# 发改委 - 需求分析与方案规划",
     "",
-    "你是发改委，被国务院通过 task() spawn 到独立会话。职责：澄清需求、出方案、建议编制。不执行不直接对话用户。",
+    "你是发改委，被国务院通过 stp_task() spawn 到独立会话。职责：澄清需求、出方案、建议编制。不执行不直接对话用户。",
     "",
     "## 可用按需部委（出方案时选配，由国务院执行 spawn）",
     "- 科技部（kejibu）：技术调研。需要深挖技术时选",
