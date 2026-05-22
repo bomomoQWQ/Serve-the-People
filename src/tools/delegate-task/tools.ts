@@ -43,6 +43,9 @@ export function createDelegateTask(ctx: PluginInput): Record<string, ToolDefinit
         prompt,
         description: args.description as string | undefined,
         parentSessionId,
+        onSessionCreated: runInBackground
+          ? (sid) => registerBackgroundTask({ sessionId: sid, parentSessionId, agent })
+          : undefined,
       })
 
       if (task.status === "error") {
@@ -50,12 +53,6 @@ export function createDelegateTask(ctx: PluginInput): Record<string, ToolDefinit
       }
 
       if (runInBackground) {
-        // Fire-and-forget: register for notification, return task ID immediately
-        registerBackgroundTask({
-          sessionId: task.sessionId,
-          parentSessionId,
-          agent,
-        })
         return `Task dispatched: ${task.sessionId}\nAgent: ${agent}\nWait for <system-reminder> notification then use stp_background_output(task_id="${task.sessionId}") to collect results.`
       }
 

@@ -11,6 +11,8 @@ export interface TaskInput {
   prompt: string
   description?: string
   parentSessionId?: string
+  /** Called after session.create, before session.prompt. Use for registration. */
+  onSessionCreated?: (sessionId: string) => void
 }
 
 export interface TaskResult {
@@ -66,6 +68,9 @@ export class TaskManager {
     }
 
     const sessionId = createResult.data.id
+
+    // Callback before prompt — background registration must happen here
+    input.onSessionCreated?.(sessionId)
 
     if (this.client.session.prompt) {
       await this.client.session.prompt({
