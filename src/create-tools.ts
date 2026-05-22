@@ -11,6 +11,7 @@ import { createAstGrepSearchTool } from "./tools/ast-grep-search/tools"
 import { createAstGrepReplaceTool } from "./tools/ast-grep-replace/tools"
 import { createLspSymbolsTool } from "./tools/lsp-symbols/tools"
 import { createHashlineEditTool } from "./tools/hashline-edit/tools"
+import { createSkillWriteTool, createSkillListTool } from "./tools/skill-write/tools"
 import { createBackgroundOutput, createBackgroundCancel } from "./tools/background-task"
 import { createSkillTool } from "./tools/skill"
 import { createSkillMcpTool } from "./tools/skill-mcp"
@@ -66,6 +67,8 @@ export function createTools(ctx: PluginInput): Record<string, ToolDefinition> {
   Object.assign(tools, {
     skill: createSkillTool(),
     skill_mcp: createSkillMcpTool(ctx.client),
+    skill_write: createSkillWriteTool(),
+    skill_list: createSkillListTool(ctx.directory),
   })
 
   return tools
