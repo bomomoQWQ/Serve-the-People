@@ -27,14 +27,16 @@ export async function handleBackgroundTaskIdle(
   const entry = registry.get(sessionId)
   if (!entry) return
 
-  // Check if child session has output
   try {
-    const msgs = await client.session?.messages?.({ path: { id: sessionId } })
+    // Wait a moment for session to settle
+    await new Promise(r => setTimeout(r, 1000))
+
+    // Check if child session has output
+    const msgs = await (client.session as unknown as Record<string, Function>)?.messages?.({ path: { id: sessionId } })
     if (!msgs?.data || msgs.data.length === 0) return
 
-    // Find last assistant message
     let hasOutput = false
-    for (let j = msgs.data.length - 1; j >= 0; j--) {
+    for (let j = (msgs.data as Array<{ info?: { role?: string } }>).length - 1; j >= 0; j--) {
       if (msgs.data[j]?.info?.role === "assistant") {
         hasOutput = true
         break
@@ -42,7 +44,6 @@ export async function handleBackgroundTaskIdle(
     }
     if (!hasOutput) return
 
-    // Inject notification into parent session
     const notification = `<system-reminder>
 [BACKGROUND TASK COMPLETE]
 **ID:** \`${entry.sessionId}\`
@@ -51,14 +52,19 @@ export async function handleBackgroundTaskIdle(
 Use \`stp_background_output(task_id="${entry.sessionId}")\` to retrieve result.
 </system-reminder>`
 
-    await client.session?.prompt?.({
+    // Try promptAsync first (non-blocking), fall back to prompt
+    const sessionApi = client.session as unknown as Record<string, Function> | undefined
+    const promptFn = sessionApi?.promptAsync ?? sessionApi?.prompt
+    if (!promptFn) return
+
+    await promptFn({
       path: { id: entry.parentSessionId },
       body: { parts: [{ type: "text", text: notification }] },
     })
 
-    // Clean up registry
     registry.delete(sessionId)
-  } catch {
-    // Best effort — don't crash the idle handler
+  } catch (e) {
+    // If notification injection fails, keep entry for retry on next idle
+    console.warn(`[serve-the-people] Background notification failed for ${sessionId}: ${String(e)}`)
   }
 }
