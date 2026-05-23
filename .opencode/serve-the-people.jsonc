@@ -2,38 +2,34 @@
 // 此文件为默认配置，按需修改后重启 OpenCode 生效
 
 {
-  // 启用调试日志
   "debug": false,
 
-  // 覆盖 Agent 默认模型
   "agents": {
-    "guowuyuan":   { "model": "deepseek/deepseek-v4-flash" },
-    "fagaiwei":    { "model": "deepseek/deepseek-v4-pro" },
-    "jianwei":     { "model": "deepseek/deepseek-v4-flash" },
-    "shenjishu":   { "model": "deepseek/deepseek-v4-flash" },
-    "danganju":    { "model": "deepseek/deepseek-v4-pro" },
-    "kejibu":      { "model": "deepseek/deepseek-v4-pro" },
-    "gongxinbu":   { "model": "deepseek/deepseek-v4-pro" },
-    "yingjibu":    { "model": "deepseek/deepseek-v4-pro" },
-    "zhujianbu":   { "model": "deepseek/deepseek-v4-pro" },
-    "jiaoyubu":    { "model": "deepseek/deepseek-v4-flash" },
-    "canshishi":   { "model": "deepseek/deepseek-v4-pro" },
+    "guowuyuan": { "model": "deepseek/deepseek-v4-flash" },
+    "fagaiwei":  { "model": "deepseek/deepseek-v4-pro" },
+    "jianwei":   { "model": "deepseek/deepseek-v4-flash" },
+    "shenjishu": { "model": "deepseek/deepseek-v4-flash" },
+    "danganju":  { "model": "deepseek/deepseek-v4-pro" },
+    "kejibu":    { "model": "deepseek/deepseek-v4-pro" },
+    "gongxinbu": { "model": "deepseek/deepseek-v4-pro" },
+    "yingjibu":  { "model": "deepseek/deepseek-v4-pro" },
+    "zhujianbu": { "model": "deepseek/deepseek-v4-pro" },
+    "jiaoyubu":  { "model": "deepseek/deepseek-v4-flash" },
+    "canshishi":    { "model": "deepseek/deepseek-v4-pro" },
     "xinxizhongxin": { "model": "deepseek/deepseek-v4-pro" },
-    "fenxiban":    { "model": "deepseek/deepseek-v4-flash" }
+    "fenxiban":   { "model": "deepseek/deepseek-v4-flash" }
   },
 
-  // MCP 服务开关
   "mcp": {
-    "websearch": true,   // Exa/Tavily 网页搜索
-    "context7": true,    // 库文档查询
-    "grep_app": true,    // GitHub 代码搜索
-    "lsp": false,        // LSP 已改为原生工具（lsp_diagnostics / lsp_symbols），无需 MCP
-    "ast_grep": false    // AST-grep 已改为原生工具（ast_grep_search / ast_grep_replace），无需 MCP
+    "websearch": true,
+    "context7": true,
+    "grep_app": true,
+    "lsp": false,
+    "ast_grep": false
   },
 
-  // Skill 加载
   "skills": {
-    "enabled": true,     // 是否启用文件级 skill 加载
-    "extraDirs": []      // 额外扫描目录
+    "enabled": true,
+    "extraDirs": []
   }
 }

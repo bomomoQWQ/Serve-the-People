@@ -1,6 +1,6 @@
 import type { AgentConfig } from "@opencode-ai/sdk"
 import type { AgentMode } from "./types"
-const MODE: AgentMode = "subagent"
+const MODE: AgentMode = "primary"
 export function createFagaiweiAgent(model: string): AgentConfig {
   return { description: "发改委", mode: MODE, model, temperature: 0.1, prompt: [
     "# 发改委 - 需求分析与方案规划",
