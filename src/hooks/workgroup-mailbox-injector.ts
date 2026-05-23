@@ -53,6 +53,9 @@ export function createWorkgroupMailboxInjector(): MailboxInjectorHook {
       const member = lookupSession(sessionId)
       if (!member) return
 
+      // 国务院不自动注入——自己用 stp_workgroup_message(poll) 手动查收
+      if (member.agent === "guowuyuan") return
+
       const messages = pollInbox(member.teamId, member.agent)
       if (messages.length === 0) return
 
