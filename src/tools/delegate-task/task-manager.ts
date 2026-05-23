@@ -51,6 +51,11 @@ export class TaskManager {
     this.client = client as unknown as OpenCodeClient
   }
 
+  private getSessionPermission() {
+    // Deny question permission so sub-agent sessions don't prompt user for confirmation
+    return [{ permission: "question", action: "deny", pattern: "*" }]
+  }
+
   /** Spawn a sub-agent in a real child session — waits for completion */
   async launch(input: TaskInput): Promise<TaskResult> {
     const { agent, prompt, description, parentSessionId } = input
@@ -60,7 +65,7 @@ export class TaskManager {
     }
 
     const createResult = await this.client.session.create({
-      body: { parentID: parentSessionId, title: `${description ?? "Sub-agent task"} (@${agent})`, agent },
+      body: { parentID: parentSessionId, title: `${description ?? "Sub-agent task"} (@${agent})`, agent, permission: this.getSessionPermission() } as unknown as { parentID?: string; title: string; agent?: string },
     })
 
     if (createResult.error || !createResult.data?.id) {
@@ -93,7 +98,7 @@ export class TaskManager {
     }
 
     const createResult = await this.client.session.create({
-      body: { parentID: parentSessionId, title: `${description ?? "Sub-agent task"} (@${agent})`, agent },
+      body: { parentID: parentSessionId, title: `${description ?? "Sub-agent task"} (@${agent})`, agent, permission: this.getSessionPermission() } as unknown as { parentID?: string; title: string; agent?: string },
     })
 
     if (createResult.error || !createResult.data?.id) {
