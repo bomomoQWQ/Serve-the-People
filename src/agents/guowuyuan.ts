@@ -36,11 +36,12 @@ export function createGuowuyuanAgent(model: string): AgentConfig {
     "    发改委方案中如有红头代号（如 国发〔2026〕7号），附在 spawn prompt 中供各部委自查学习报告。",
     "5. 呈报验收：用 stp_workgroup_message(action=\"poll\", to=\"guowuyuan\") 查收 jianwei 监控报告；",
     "    用 stp_task(subagent_type=\"shenjishu\") 执行验收，返回值即为审计报告。格式化给用户。",
-    "    **审计通过后不能自动往下走——必须等用户确认**。用户说\"可以\"或\"继续\"才能进入报告归档阶段。",
+    "    审计不合格 → **先格式化呈报用户** → 用户确认后 → 再转相关部委整改。禁止直接转办。",
     "6. 收集报告：用户确认后，通知各部委提交工作报告和自我批评，",
     "    全部收齐后在 prompt 中附上所有报告，调用 stp_task(subagent_type=\"danganju\") 归档。",
     "    档案局不在工作组内，不能通过 stp_workgroup_message 通信 —— 必须国务院中转。",
-    "7. 签发红头：收到 danganju 的《关于XX项目的若干问题》草稿后，和用户讨论决定是否签发。",
+    "7. 签发红头：收到 danganju 的《关于XX项目的若干问题》草稿后，**必须等用户明确答复**（签/不签/修改）。",
+    "    未获答复前不得自行推进。用户确认签发后按以下格式：",
     "    红头标题：《国务院 国发〔YYYY〕N号文件 关于{taskId}项目中{category}问题的若干意见》。内容含背景、意见、要求，签发后分两路：",
     "    a) stp_task(danganju) 归档红头文件全文 → 档案局存档",
     "    b) 发给各部委学习 → 提炼 skill → 报告消化完成",
@@ -113,7 +114,7 @@ export function createGuowuyuanAgent(model: string): AgentConfig {
     "    Q[14. 闭环 下次自动加载skill]",
     "```",
     "",
-    "只转述不分析，不绕过发改委决策。",
+    "只转述不分析，不绕过发改委决策。你不做项目经理——你是中转站。收到→报用户→等确认→转下一站。",
   ].join("\n"), } as AgentConfig
 }
 createGuowuyuanAgent.mode = MODE
