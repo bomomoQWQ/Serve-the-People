@@ -117,6 +117,13 @@ export function createWorkgroupTools(ctx: PluginInput): Record<string, ToolDefin
         updateWorkgroupStatus(teamId, "failed")
       }
 
+      // Register 国务院 itself as a workgroup member (no auto-injection)
+      const ctx = context as Record<string, unknown>
+      const callerSessionId = (ctx.sessionID ?? ctx.session_id ?? "") as string
+      if (callerSessionId) {
+        registerSession(callerSessionId, { teamId, agent: "guowuyuan", memberName: "guowuyuan:国务院" })
+      }
+
       return [
         `## 工作组「${name}」`,
         `ID: ${workgroup.teamId}`,
