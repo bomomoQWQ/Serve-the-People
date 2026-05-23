@@ -202,7 +202,22 @@ git clone https://github.com/bomomoQWQ/Serve-the-People.git
 cd Serve-the-People && bash install.sh
 ```
 
-手动：`bun install && bun run build`，OpenCode 配置加 `{ "plugin": ["/path/to/Serve-the-People"] }`。重启即用。
+重启 OpenCode 即可。
+
+### Linux 权限
+
+OpenCode 对主目录/隐藏文件操作会弹窗。子 agent 已禁用弹窗，但需配置权限避免拒绝：
+
+```bash
+# 推荐：启动时加
+opencode --permission allow:read --permission allow:write --permission allow:edit --permission allow:bash
+```
+
+或编辑 `~/.config/opencode/opencode.jsonc`：
+
+```jsonc
+{ "permissions": { "allow": ["read", "write", "edit", "bash"] } }
+```
 
 ---
 
