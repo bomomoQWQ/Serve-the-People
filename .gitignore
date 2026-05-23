@@ -11,3 +11,6 @@ dist/
 
 # Keep: .servethepeople/skills/ and .servethepeople/archives/ (index, digestion, works)
 # These are project overrides for global ~/.servethepeople/ — git-track them.
+
+# Local model config (keeps your personalized agent models out of git)
+.opencode/serve-the-people.jsonc
