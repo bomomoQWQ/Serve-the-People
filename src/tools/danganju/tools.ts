@@ -52,8 +52,12 @@ export function createDanganjuTools(): Record<string, ToolDefinition> {
       const raw = args.data as string
 
       let parsed: Record<string, unknown>
-      try { parsed = JSON.parse(raw) } catch {
-        return "错误：data 不是有效的 JSON"
+      if (typeof raw === "object" && raw !== null) {
+        parsed = raw
+      } else {
+        try { parsed = JSON.parse(raw as string) } catch {
+          return "错误：data 不是有效的 JSON"
+        }
       }
 
       switch (type) {
