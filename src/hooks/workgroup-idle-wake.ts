@@ -36,6 +36,7 @@ interface WakeContext {
 
 export function createWorkgroupIdleWake(ctx: WakeContext) {
   const recentWakeHints = new Map<string, number>()
+  const jianweiTimers = new Map<string, number>() // sessionId → last wake time
 
   return async (sessionId: string): Promise<void> => {
     const member = lookupSession(sessionId)
@@ -45,6 +46,24 @@ export function createWorkgroupIdleWake(ctx: WakeContext) {
     if (member.agent === "guowuyuan") return
 
     const messages = pollInbox(member.teamId, member.agent)
+
+    // 监委定时唤醒（即使没有新消息），每 60s 查一次
+    if (messages.length === 0 && member.agent === "jianwei") {
+      const lastWake = jianweiTimers.get(sessionId) ?? 0
+      if (Date.now() - lastWake < 60_000) return
+      jianweiTimers.set(sessionId, Date.now())
+      if (ctx.client.session?.prompt) {
+        await ctx.client.session.prompt({
+          path: { id: sessionId },
+          body: {
+            agent: member.agent,
+            parts: [{ type: "text", text: "请检查工作组当前状态（stp_workgroup_status）。状态无变化不报告，只报告异常。" }],
+          },
+        })
+      }
+      return
+    }
+
     if (messages.length === 0) return
 
     // Deduplicate: don't repeatedly wake for the same message batch
