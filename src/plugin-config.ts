@@ -70,9 +70,7 @@ function loadJsoncConfig(path: string): Partial<ServeThePeopleConfig> | null {
     // Strip comments (JSONC: // and /* */)
     const stripped = raw
       .replace(/\/\*[\s\S]*?\*\//g, "")  // block comments
-      .split("\n")
-      .filter((line) => !line.trim().startsWith("//"))  // line comments
-      .join("\n")
+      .replace(/\/\/.*$/gm, "")           // line comments (including trailing)
     return JSON.parse(stripped) as Partial<ServeThePeopleConfig>
   } catch {
     return null
