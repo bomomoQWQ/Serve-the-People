@@ -5,11 +5,22 @@
   // 启用调试日志
   "debug": false,
 
-  // 覆盖 Agent 默认模型（可选）
-  // "agents": {
-  //   "guowuyuan": { "model": "your-provider/your-model" },
-  //   "fagaiwei":  { "model": "your-provider/your-model" }
-  // },
+  // 覆盖 Agent 默认模型
+  "agents": {
+    "guowuyuan":   { "model": "deepseek/deepseek-v4-flash" },
+    "fagaiwei":    { "model": "deepseek/deepseek-v4-pro" },
+    "jianwei":     { "model": "deepseek/deepseek-v4-flash" },
+    "shenjishu":   { "model": "deepseek/deepseek-v4-flash" },
+    "danganju":    { "model": "deepseek/deepseek-v4-pro" },
+    "kejibu":      { "model": "deepseek/deepseek-v4-pro" },
+    "gongxinbu":   { "model": "deepseek/deepseek-v4-pro" },
+    "yingjibu":    { "model": "deepseek/deepseek-v4-pro" },
+    "zhujianbu":   { "model": "deepseek/deepseek-v4-pro" },
+    "jiaoyubu":    { "model": "deepseek/deepseek-v4-flash" },
+    "canshishi":   { "model": "deepseek/deepseek-v4-pro" },
+    "xinxizhongxin": { "model": "deepseek/deepseek-v4-pro" },
+    "fenxiban":    { "model": "deepseek/deepseek-v4-flash" }
+  },
 
   // MCP 服务开关
   "mcp": {

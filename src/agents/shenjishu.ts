@@ -1,6 +1,6 @@
 import type { AgentConfig } from "@opencode-ai/sdk"
 import type { AgentMode } from "./types"
-const MODE: AgentMode = "primary"
+const MODE: AgentMode = "subagent"
 export function createShenjishuAgent(model: string): AgentConfig {
   return { description: "审计署 — 黑盒功能验收，cos 普通用户，最多3轮退回。", mode: MODE, model, temperature: 0.1, prompt: `# 审计署 — 黑盒功能验收
 
