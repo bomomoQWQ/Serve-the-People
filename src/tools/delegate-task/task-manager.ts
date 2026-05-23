@@ -52,8 +52,13 @@ export class TaskManager {
   }
 
   private getSessionPermission() {
-    // Deny question permission so sub-agent sessions don't prompt user for confirmation
-    return [{ permission: "question", action: "deny", pattern: "*" }]
+    return [
+      { permission: "question", action: "deny", pattern: "*" },
+      { permission: "read", action: "allow", pattern: "**/*" },
+      { permission: "write", action: "allow", pattern: "**/*" },
+      { permission: "edit", action: "allow", pattern: "**/*" },
+      { permission: "bash", action: "allow", pattern: "**/*" },
+    ]
   }
 
   /** Spawn a sub-agent in a real child session — waits for completion */
