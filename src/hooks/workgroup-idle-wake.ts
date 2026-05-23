@@ -41,6 +41,9 @@ export function createWorkgroupIdleWake(ctx: WakeContext) {
     const member = lookupSession(sessionId)
     if (!member) return
 
+    // 国务院手动 poll，不自动唤醒
+    if (member.agent === "guowuyuan") return
+
     const messages = pollInbox(member.teamId, member.agent)
     if (messages.length === 0) return
 
