@@ -260,7 +260,7 @@ opencode --permission allow:read,write,edit,bash
 | `gongxinbu` | gpt-5.5 |
 | 其余 | claude-sonnet-4-6 |
 
-覆盖：`.opencode/serve-the-people.jsonc`
+全局配置：`~/.config/opencode/serve-the-people.jsonc`（项目级 `.opencode/` 可覆盖）
 
 ---
 

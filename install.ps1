@@ -112,10 +112,10 @@ Write-Host "  - gongxinbu (工信部)" -ForegroundColor Gray
 Write-Host "  - yingjibu  (应急管理部)" -ForegroundColor Gray
 Write-Host "  - zhujianbu (住建部)" -ForegroundColor Gray
 Write-Host "  - jiaoyubu  (教育部)" -ForegroundColor Gray
-Write-Host "  - oracle    (技术顾问)" -ForegroundColor Gray
-Write-Host "  - librarian (文档搜索)" -ForegroundColor Gray
-Write-Host "  - explore   (代码搜索)" -ForegroundColor Gray
+Write-Host "  - canshishi    (参事室)" -ForegroundColor Gray
+Write-Host "  - xinxizhongxin (信息中心)" -ForegroundColor Gray
+Write-Host "  - fenxiban      (分析办)" -ForegroundColor Gray
 Write-Host ""
-Write-Host "  配置: 编辑项目根目录的 .opencode/serve-the-people.jsonc" -ForegroundColor Gray
+Write-Host "  模型配置: ~/.config/opencode/serve-the-people.jsonc" -ForegroundColor Gray
 Write-Host "  插件注册: $openCodeConfig" -ForegroundColor Gray
 Write-Host "========================================" -ForegroundColor Cyan
