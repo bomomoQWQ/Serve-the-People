@@ -3,6 +3,8 @@
 > 14 步流水线：**说清楚才做 → 做完了有人验 → 踩坑了有记录 → 下次自动防。**
 >
 > 市面上多数 Multi-Agent 框架是自由对话模式——Agent 聊完给结果，没需求澄清、没方案审核、没独立验收、没经验积累。这个项目的起点：发现 [edict](https://github.com/cft0808/edict) 的古制三省六部架构和 [oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) 的插件框架，用现代国家机关的分工制衡思路重写一套 Agent 协作流程。
+>
+> **适用场景**：中大型项目、需要质量可追溯的编码任务。小脚本/快速原型直接用 OpenCode 默认 agent。
 
 ---
 
