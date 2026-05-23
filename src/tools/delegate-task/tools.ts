@@ -13,10 +13,9 @@ export function createDelegateTask(ctx: PluginInput): Record<string, ToolDefinit
 
   const taskTool: ToolDefinition = tool({
     description:
-      "Spawn a sub-agent in a real child session. " +
-      "Set run_in_background=true to fire-and-forget (use stp_background_output to collect later). " +
-      "Set run_in_background=false to block until completion. " +
-      "Use subagent_type: canshishi, xinxizhongxin, fenxiban, fagaiwei, gongxinbu, kejibu, etc.",
+      "在独立子会话中 spawn Agent。run_in_background=true 异步发射后用 stp_background_output 收结果，" +
+      "false 则阻塞等待完成。" +
+      "subagent_type: canshishi / xinxizhongxin / fenxiban / fagaiwei / gongxinbu / kejibu 等。",
     args: {
       subagent_type: tool.schema.string()
         .describe("Agent to spawn"),

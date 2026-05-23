@@ -6,7 +6,7 @@ export function createSessionManagerTools(ctx: PluginInput): Record<string, Tool
 
   const sessionList: ToolDefinition = tool({
     description:
-      "List all OpenCode sessions with optional filtering. Returns session IDs with metadata including message count, date range, and agents used.",
+      "列出全部 OpenCode 会话（可过滤）。返回会话 ID 及消息数/时间/Agent 等元数据。",
     args: {
       limit: tool.schema.number().optional().describe("Maximum number of sessions to return"),
       from_date: tool.schema.string().optional().describe("Filter sessions from this date (ISO 8601 format)"),
@@ -35,7 +35,7 @@ export function createSessionManagerTools(ctx: PluginInput): Record<string, Tool
 
   const sessionRead: ToolDefinition = tool({
     description:
-      "Read messages and history from an OpenCode session. Returns a formatted view of session messages with role, timestamp, and content.",
+      "读取 OpenCode 会话的消息和历史记录。",
     args: {
       session_id: tool.schema.string().describe("Session ID to read"),
       include_todos: tool.schema.boolean().optional().describe("Include todo list if available"),
@@ -63,7 +63,7 @@ export function createSessionManagerTools(ctx: PluginInput): Record<string, Tool
 
   const sessionSearch: ToolDefinition = tool({
     description:
-      "Search for content within OpenCode session messages. Performs full-text search across session messages and returns matching excerpts.",
+      "搜索 OpenCode 会话消息内容。全文检索返回匹配片段。",
     args: {
       query: tool.schema.string().describe("Search query string"),
       session_id: tool.schema.string().optional().describe("Search within specific session only"),
@@ -104,7 +104,7 @@ export function createSessionManagerTools(ctx: PluginInput): Record<string, Tool
 
   const sessionInfo: ToolDefinition = tool({
     description:
-      "Get metadata and statistics about an OpenCode session. Returns detailed information including message count, date range, agents used, and available data sources.",
+      "获取 OpenCode 会话的元数据和统计信息。",
     args: {
       session_id: tool.schema.string().describe("Session ID to inspect"),
     },

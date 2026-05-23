@@ -53,7 +53,7 @@ async function runTypecheck(cwd: string): Promise<{ output: string; exitCode: nu
 export function createLspDiagnosticsTool(): ToolDefinition {
   return tool({
     description:
-      "运行项目类型检查（tsc --noEmit），返回诊断错误/警告列表。用于代码提交前验证。",
+      "运行项目类型检查（tsc --noEmit），返回诊断错误/警告列表。代码提交前验证。",
     args: {
       file_path: tool.schema.string().optional()
         .describe("仅过滤指定文件的诊断（可选，不传则全部）"),

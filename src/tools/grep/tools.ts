@@ -4,11 +4,7 @@ import { runRg } from "../../shared/ripgrep-cli"
 export function createGrepTools(): Record<string, ToolDefinition> {
   const grep: ToolDefinition = tool({
     description:
-      "Fast content search tool with safety limits (60s timeout, 256KB output). " +
-      "Searches file contents using regular expressions. " +
-      "Supports full regex syntax. " +
-      "Filter files by pattern with the include parameter. " +
-      'Output modes: "content" shows matching lines, "files_with_matches" shows only file paths (default), "count" shows match counts per file.',
+      "快速文本搜索（正则，60s 超时，256KB 上限）。output_mode: content/files_with_matches/count。include 过滤文件模式。",
     args: {
       pattern: tool.schema.string().describe("The regex pattern to search for in file contents"),
       include: tool.schema.string().optional().describe('File pattern to include (e.g. "*.js", "*.{ts,tsx}")'),

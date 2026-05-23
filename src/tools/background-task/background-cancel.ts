@@ -1,7 +1,7 @@
 import { tool, type ToolDefinition } from "@opencode-ai/plugin/tool"
 import type { TaskManager } from "../delegate-task/task-manager"
 
-const BACKGROUND_CANCEL_DESCRIPTION = `Cancel running background task(s). Use all=true to cancel ALL before final answer.`
+const BACKGROUND_CANCEL_DESCRIPTION = `取消运行中的背景任务。all=true 取消全部。`
 
 export function createBackgroundCancel(manager: TaskManager): ToolDefinition {
   return tool({

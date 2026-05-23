@@ -5,7 +5,7 @@ import type { TaskManager } from "../delegate-task/task-manager"
 export function createBackgroundOutput(manager: TaskManager, client: PluginInput["client"]): ToolDefinition {
   return tool({
     description:
-      "Get output from a background task. If the task completed already, queries the session directly via API. Work for both short-lived and long-running tasks.",
+      "获取背景任务输出。已完成的任务直查 session API，短任务和长任务都适用。",
     args: {
       task_id: tool.schema.string().describe("Task ID (session ID) to get output from"),
     },

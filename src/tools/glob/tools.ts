@@ -4,9 +4,7 @@ import { runRg } from "../../shared/ripgrep-cli"
 export function createGlobTools(): Record<string, ToolDefinition> {
   const glob: ToolDefinition = tool({
     description:
-      "Fast file pattern matching tool with safety limits (60s timeout, 100 file limit). " +
-      "Supports glob patterns like \"**/*.js\" or \"src/**/*.ts\". " +
-      "Returns matching file paths sorted by modification time.",
+      "快速文件模式匹配（60s 超时，100 文件上限）。支持 glob 如 **/*.js。",
     args: {
       pattern: tool.schema.string().describe("The glob pattern to match files against"),
       path: tool.schema.string().optional().describe(

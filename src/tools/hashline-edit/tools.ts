@@ -55,8 +55,8 @@ export function tagReadOutput(content: string, filePath: string): string {
 export function createHashlineEditTool(): ToolDefinition {
   return tool({
     description:
-      "精确文件编辑。old_string 必须包含 LINE#ID 前缀以确保编辑的是当前版本。\n" +
-      "用法: 先用 Read 读取文件（自动附加 LINE#ID），复制目标行（含 LINE#ID 前缀），再调用此工具。",
+      "精确文件编辑。old_string 必须包含 LINE#ID 前缀以确保编辑的是当前版本。" +
+      "用法：先用 Read 读文件（自动附加 LINE#ID），复制目标行（含 LINE#ID 前缀），再调用此工具。",
     args: {
       file_path: tool.schema.string()
         .describe("要编辑的文件的绝对路径"),
