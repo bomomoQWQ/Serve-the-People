@@ -26,6 +26,7 @@ import {
   updateTask,
 } from "../../features/workgroup/tasklist"
 import { sendMessage, pollInbox } from "../../features/workgroup/mailbox"
+import { ackMessage } from "../../features/workgroup/mailbox"
 import { registerSession } from "../../features/workgroup/session-registry"
 
 /**
@@ -328,6 +329,10 @@ export function createWorkgroupTools(ctx: PluginInput): Record<string, ToolDefin
           if (!to) return "错误：需要提供收件人 to（查询谁的邮箱）"
           const messages = pollInbox(teamId, to)
           if (messages.length === 0) return `${to} 的邮箱为空。`
+          // Ack all read messages
+          for (const m of messages) {
+            ackMessage(teamId, to, m.messageId)
+          }
           return messages.map((m) =>
             `- [${m.messageId}] 来自 ${m.from}: ${m.body.slice(0, 120)}${m.body.length > 120 ? "..." : ""} (${m.timestamp})`,
           ).join("\n")
