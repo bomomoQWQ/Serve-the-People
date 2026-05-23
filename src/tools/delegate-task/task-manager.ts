@@ -52,16 +52,10 @@ export class TaskManager {
   }
 
   private getSessionPermission() {
-    return [
-      { permission: "question", action: "deny", pattern: "*" },
-      { permission: "read", action: "allow", pattern: "**/*" },
-      { permission: "read", action: "allow", pattern: "**/.*" },
-      { permission: "write", action: "allow", pattern: "**/*" },
-      { permission: "write", action: "allow", pattern: "**/.*" },
-      { permission: "edit", action: "allow", pattern: "**/*" },
-      { permission: "edit", action: "allow", pattern: "**/.*" },
-      { permission: "bash", action: "allow", pattern: "**/*" },
-    ]
+    // Only deny question — don't add blanket allow rules.
+    // Read/write/bash permissions are governed by agent tool restrictions
+    // and OpenCode's own permission model. Adding allow here would bypass both.
+    return [{ permission: "question", action: "deny", pattern: "*" }]
   }
 
   /** Spawn a sub-agent in a real child session — waits for completion */
