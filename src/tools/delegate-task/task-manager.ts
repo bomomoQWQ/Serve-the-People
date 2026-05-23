@@ -55,8 +55,11 @@ export class TaskManager {
     return [
       { permission: "question", action: "deny", pattern: "*" },
       { permission: "read", action: "allow", pattern: "**/*" },
+      { permission: "read", action: "allow", pattern: "**/.*" },
       { permission: "write", action: "allow", pattern: "**/*" },
+      { permission: "write", action: "allow", pattern: "**/.*" },
       { permission: "edit", action: "allow", pattern: "**/*" },
+      { permission: "edit", action: "allow", pattern: "**/.*" },
       { permission: "bash", action: "allow", pattern: "**/*" },
     ]
   }
