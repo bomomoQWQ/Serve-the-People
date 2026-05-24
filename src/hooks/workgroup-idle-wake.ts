@@ -12,6 +12,7 @@
 
 import { lookupSession } from "../features/workgroup/session-registry"
 import { pollInbox } from "../features/workgroup/mailbox"
+import { listTasks } from "../features/workgroup/tasklist"
 
 function buildWakeHint(count: number): string {
   return `[系统]\n你的信箱有 ${count} 条新工作组消息。新的消息将在当前轮次通过 mailbox 注入。请查看并处理。`
@@ -54,6 +55,12 @@ export function createWorkgroupIdleWake(ctx: WakeContext) {
         if (existing) clearTimeout(existing)
         const t = setTimeout(() => {
           jianweiTimers.delete(sessionId)
+          // Check if all tasks are done — if yes, auto-stop
+          const done = member.teamIds.every(tid => {
+            const tasks = listTasks(tid)
+            return tasks.length > 0 && tasks.every(t => t.status === "completed")
+          })
+          if (done) return // All done, stop monitoring
           ctx.client.session?.prompt?.({
             path: { id: sessionId },
             body: {
