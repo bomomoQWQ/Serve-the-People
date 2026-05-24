@@ -36,31 +36,60 @@ interface WakeContext {
 
 export function createWorkgroupIdleWake(ctx: WakeContext) {
   const recentWakeHints = new Map<string, number>()
-  const jianweiTimers = new Map<string, number>() // sessionId → last wake time
+  const jianweiTimers = new Map<string, ReturnType<typeof setTimeout>>()
+  const jianweiLastWake = new Map<string, number>()
 
   return async (sessionId: string): Promise<void> => {
     const member = lookupSession(sessionId)
     if (!member) return
 
-    // 国务院手动 poll，不自动唤醒
     if (member.agent === "guowuyuan") return
 
     const messages = pollInbox(member.teamId, member.agent)
 
-    // 监委定时唤醒（即使没有新消息），每 60s 查一次
-    if (messages.length === 0 && member.agent === "jianwei") {
-      const lastWake = jianweiTimers.get(sessionId) ?? 0
-      if (Date.now() - lastWake < 60_000) return
-      jianweiTimers.set(sessionId, Date.now())
-      if (ctx.client.session?.prompt) {
-        await ctx.client.session.prompt({
-          path: { id: sessionId },
-          body: {
-            agent: member.agent,
-            parts: [{ type: "text", text: "请检查工作组当前状态（stp_workgroup_status）。状态无变化不报告，只报告异常。" }],
-          },
-        })
+    // 监委：即使无消息也定时唤醒，用 setTimeout 兜底避免 idle 只触发一次
+    if (member.agent === "jianwei") {
+      const scheduleNext = (delay: number) => {
+        const existing = jianweiTimers.get(sessionId)
+        if (existing) clearTimeout(existing)
+        const t = setTimeout(() => {
+          jianweiTimers.delete(sessionId)
+          ctx.client.session?.prompt?.({
+            path: { id: sessionId },
+            body: {
+              agent: member.agent,
+              parts: [{ type: "text", text: "请检查工作组当前状态（stp_workgroup_status）。状态无变化不报告，只报告异常。" }],
+            },
+          })?.catch(() => {})
+        }, delay)
+        jianweiTimers.set(sessionId, t)
       }
+
+      // Wake every 60s, regardless of messages
+      const lastWake = jianweiLastWake.get(sessionId) ?? 0
+      if (messages.length > 0) {
+        // Has messages — wake now, reset timer
+        jianweiLastWake.set(sessionId, Date.now())
+        scheduleNext(60_000)
+        return
+      }
+      const elapsed = Date.now() - lastWake
+      if (elapsed >= 60_000) {
+        jianweiLastWake.set(sessionId, Date.now())
+        scheduleNext(60_000)
+        if (ctx.client.session?.prompt) {
+          await ctx.client.session.prompt({
+            path: { id: sessionId },
+            body: {
+              agent: member.agent,
+              parts: [{ type: "text", text: "请检查工作组当前状态（stp_workgroup_status）。状态无变化不报告，只报告异常。" }],
+            },
+          })
+        }
+        return
+      }
+      // Not yet time — schedule for remaining time
+      scheduleNext(60_000 - elapsed)
       return
     }
 
