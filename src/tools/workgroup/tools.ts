@@ -103,7 +103,7 @@ export function createWorkgroupTools(ctx: PluginInput): Record<string, ToolDefin
           } else {
             // Register session for mailbox injection + idle-wake
             registerSession(result.sessionId, {
-              teamId,
+              teamIds: [teamId],
               agent,
               memberName: `${agent}:${role}`,
             })
@@ -123,7 +123,7 @@ export function createWorkgroupTools(ctx: PluginInput): Record<string, ToolDefin
       const ctx = context as Record<string, unknown>
       const callerSessionId = (ctx.sessionID ?? ctx.session_id ?? "") as string
       if (callerSessionId) {
-        registerSession(callerSessionId, { teamId, agent: "guowuyuan", memberName: "guowuyuan:国务院" })
+        registerSession(callerSessionId, { teamIds: [teamId], agent: "guowuyuan", memberName: "guowuyuan:国务院" })
       }
 
       return [

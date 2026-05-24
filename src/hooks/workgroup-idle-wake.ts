@@ -45,7 +45,7 @@ export function createWorkgroupIdleWake(ctx: WakeContext) {
 
     if (member.agent === "guowuyuan") return
 
-    const messages = pollInbox(member.teamId, member.agent)
+    const messages = pollInbox(member.teamIds[0], member.agent)
 
     // 监委：即使无消息也定时唤醒，用 setTimeout 兜底避免 idle 只触发一次
     if (member.agent === "jianwei") {
@@ -97,7 +97,7 @@ export function createWorkgroupIdleWake(ctx: WakeContext) {
 
     // Deduplicate: don't repeatedly wake for the same message batch
     const batchKey = buildWakeBatchKey(
-      member.teamId,
+      member.teamIds[0],
       member.agent,
       messages.map((m) => m.messageId),
     )

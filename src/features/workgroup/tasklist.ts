@@ -86,6 +86,7 @@ export function claimTask(teamId: string, taskId: string, owner: string): Task |
   task.owner = owner
   task.updatedAt = new Date().toISOString()
   writeFileSync(file, JSON.stringify(task, null, 2))
+  touchWorkgroup(teamId)
   return task
 }
 
@@ -99,5 +100,18 @@ export function updateTask(teamId: string, taskId: string, status: TaskStatus): 
   task.status = status
   task.updatedAt = new Date().toISOString()
   writeFileSync(file, JSON.stringify(task, null, 2))
+
+  // Refresh workgroup timestamp
+  touchWorkgroup(teamId)
   return task
+}
+
+function touchWorkgroup(teamId: string): void {
+  const stateFile = join(".servethepeople/teams", teamId, "state.json")
+  if (!existsSync(stateFile)) return
+  try {
+    const state = JSON.parse(readFileSync(stateFile, "utf-8"))
+    state.updatedAt = new Date().toISOString()
+    writeFileSync(stateFile, JSON.stringify(state, null, 2))
+  } catch { /* best effort */ }
 }

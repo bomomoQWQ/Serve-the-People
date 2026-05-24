@@ -110,7 +110,7 @@ export async function createWorkgroupSession(
       sessionId = result.sessionId
       // Register for mailbox injection + idle-wake
       registerSession(result.sessionId, {
-        teamId,
+        teamIds: [teamId],
         agent: member.agent,
         memberName: `${member.agent}:${member.role}`,
       })

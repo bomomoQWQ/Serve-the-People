@@ -1,40 +1,37 @@
 /**
  * Workgroup session registry — in-memory sessionID → workgroup member mapping.
- *
- * Hooks (mailbox-injector, idle-wake) use this to determine if a session is
- * a workgroup member, and which team/agent it belongs to.
- *
- * Memory-only: lost on plugin restart. Acceptable because workgroup sessions
- * are ephemeral — on restart all sessions would be terminated by OpenCode anyway.
+ * Supports one session in multiple workgroups (e.g. 国务院跨组调度).
  */
 export interface SessionEntry {
-  teamId: string
+  teamIds: string[]
   agent: string
-  /** Human-readable member role (e.g. "工信部-编码") */
   memberName: string
 }
 
 const registry = new Map<string, SessionEntry>()
 
-/** Register a workgroup member session */
 export function registerSession(sessionId: string, entry: SessionEntry): void {
-  registry.set(sessionId, entry)
+  const existing = registry.get(sessionId)
+  if (existing) {
+    for (const tid of entry.teamIds) {
+      if (!existing.teamIds.includes(tid)) existing.teamIds.push(tid)
+    }
+  } else {
+    registry.set(sessionId, entry)
+  }
 }
 
-/** Unregister a workgroup member session (e.g. on session delete) */
 export function unregisterSession(sessionId: string): void {
   registry.delete(sessionId)
 }
 
-/** Look up workgroup membership by session ID */
 export function lookupSession(sessionId: string): SessionEntry | undefined {
   return registry.get(sessionId)
 }
 
-/** Find a member's session ID by team and agent name (for sending wake prompts) */
 export function findSessionByMember(teamId: string, agent: string): string | undefined {
   for (const [sid, entry] of registry) {
-    if (entry.teamId === teamId && entry.agent === agent) return sid
+    if (entry.teamIds.includes(teamId) && entry.agent === agent) return sid
   }
   return undefined
 }
