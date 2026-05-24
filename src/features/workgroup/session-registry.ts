@@ -30,3 +30,11 @@ export function unregisterSession(sessionId: string): void {
 export function lookupSession(sessionId: string): SessionEntry | undefined {
   return registry.get(sessionId)
 }
+
+/** Find a member's session ID by team and agent name (for sending wake prompts) */
+export function findSessionByMember(teamId: string, agent: string): string | undefined {
+  for (const [sid, entry] of registry) {
+    if (entry.teamId === teamId && entry.agent === agent) return sid
+  }
+  return undefined
+}

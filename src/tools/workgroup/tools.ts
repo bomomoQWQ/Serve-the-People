@@ -27,7 +27,7 @@ import {
 } from "../../features/workgroup/tasklist"
 import { sendMessage, pollInbox } from "../../features/workgroup/mailbox"
 import { ackMessage } from "../../features/workgroup/mailbox"
-import { registerSession } from "../../features/workgroup/session-registry"
+import { registerSession, findSessionByMember } from "../../features/workgroup/session-registry"
 
 /**
  * Create all workgroup-related tools.
@@ -35,6 +35,7 @@ import { registerSession } from "../../features/workgroup/session-registry"
  */
 export function createWorkgroupTools(ctx: PluginInput): Record<string, ToolDefinition> {
   const manager = new TaskManager(ctx.client)
+  const client = ctx.client
 
   // ─── workgroup_create — spawn a new workgroup ───
   const workgroupCreate: ToolDefinition = tool({
@@ -323,6 +324,12 @@ export function createWorkgroupTools(ctx: PluginInput): Record<string, ToolDefin
             kind: "message",
             body,
           })
+          // Actively wake the recipient session
+          const recipientSid = findSessionByMember(teamId, to)
+          if (recipientSid) {
+            const api = client.session as unknown as { prompt?: Function }
+            api.prompt?.({ path: { id: recipientSid }, body: { agent: to, parts: [{ type: "text", text: `你有新的工作组消息。` }] } }).catch(() => {})
+          }
           return `✅ 消息已发送: ${msg.messageId} → ${to}`
         }
         case "poll": {
