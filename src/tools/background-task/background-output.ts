@@ -14,25 +14,28 @@ export function createBackgroundOutput(manager: TaskManager, client: PluginInput
         const taskId = args.task_id as string
         const task = manager.getTask(taskId)
 
-        // If task in memory — use cached result
         if (task) {
           if (task.status === "error") return `Error: ${task.error ?? "Unknown error"}`
-          if (task.status === "completed") return task.output ?? "Completed with no output."
+          if (task.status === "completed") return task.output ?? "(no output)"
           if (task.status === "running") {
-            const result = await manager.poll(task.sessionId, 10)
-            if (result.status === "completed") return result.output ?? "Completed with no output."
+            const result = await manager.poll(task.sessionId, 5)
+            if (result.status === "completed") return result.output ?? "(no output)"
             if (result.status === "error") return `Error: ${result.error ?? "Unknown error"}`
-            return "Still running. Check again."
+            return "Still running."
           }
         }
 
-        // Task not in memory (completed and cleaned up, or never tracked)
-        // Try querying the session directly
-        if (client.session?.messages) {
-          const msgResult = await client.session.messages({ path: { id: taskId } })
-          const msgs = msgResult.data
+        // Try polling the session directly (even if not tracked in memory)
+        const result = await manager.poll(taskId, 3)
+        if (result.status === "completed" && result.output) return result.output
+        if (result.status === "error" && result.error) return `Error: ${result.error}`
+
+        // Last resort: query session messages directly
+        const sessionApi = client.session as unknown as Record<string, unknown> | undefined
+        if (typeof sessionApi?.messages === "function") {
+          const msgResult = await (sessionApi.messages as (opts: { path: { id: string } }) => Promise<{ data?: Array<{ info?: { role?: string }; parts?: Array<{ type?: string; text?: string }> }> }>)({ path: { id: taskId } })
+          const msgs = msgResult?.data
           if (msgs && msgs.length > 0) {
-            // Find last assistant message
             for (let j = msgs.length - 1; j >= 0; j--) {
               const msg = msgs[j]
               if (msg.info?.role === "assistant") {
@@ -46,11 +49,7 @@ export function createBackgroundOutput(manager: TaskManager, client: PluginInput
           }
         }
 
-        // If the session ID looks like a direct session ID, it might have completed
-        if (taskId.length > 8) {
-          return "Task completed but output unavailable (session may have been cleaned up)."
-        }
-        return `Task not found: ${taskId}`
+        return `Task completed but output unavailable (session=${taskId.slice(0, 12)}... may have been cleaned up). Try stp_background_output again.`
       } catch (e) {
         return `Error: ${e instanceof Error ? e.message : String(e)}`
       }
