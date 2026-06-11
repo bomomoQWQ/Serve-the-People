@@ -373,8 +373,8 @@ export function createWorkgroupTools(ctx: PluginInput): Record<string, ToolDefin
     stp_workgroup_create: workgroupCreate,
     stp_workgroup_status: workgroupStatus,
     stp_workgroup_list: workgroupList,
-    stp_stp_workgroup_task: workgroupTask,
-    stp_stp_workgroup_message: workgroupMessage,
+    stp_workgroup_task: workgroupTask,
+    stp_workgroup_message: workgroupMessage,
     stp_workgroup_disband: workgroupDisband,
   }
 }

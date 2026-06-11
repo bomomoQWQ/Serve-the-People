@@ -26,11 +26,13 @@ export const MAX_ESCALATION = 3
 /**
  * Escalation hierarchy from lowest to highest authority.
  * When retries are exhausted the task moves one step up this chain.
+ *
+ * Only agents in this list can be escalated; others are marked failed when retries exhaust.
  */
 export const ESCALATION_HIERARCHY = [
-  "doing",
-  "assigned",
-  "menxia",
-  "zhongshu",
-  "taizi",
+  "gongxinbu",   // 工信部 — worker ministry
+  "yingjibu",    // 应急管理部 — QA / safety reviewer
+  "kejibu",      // 科技部 — research coordinator
+  "fagaiwei",    // 发改委 — planning authority
+  "guowuyuan",   // 国务院 — premier, top of chain
 ] as const

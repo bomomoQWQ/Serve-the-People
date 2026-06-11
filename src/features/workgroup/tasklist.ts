@@ -3,7 +3,7 @@
  * Layout: .servethepeople/teams/{teamId}/tasks/{taskId}.json
  */
 
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs"
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync, renameSync } from "node:fs"
 import { join } from "node:path"
 
 export type TaskStatus = "pending" | "claimed" | "in_progress" | "completed"
@@ -85,7 +85,12 @@ export function claimTask(teamId: string, taskId: string, owner: string): Task |
   task.status = "claimed"
   task.owner = owner
   task.updatedAt = new Date().toISOString()
-  writeFileSync(file, JSON.stringify(task, null, 2))
+
+  // Atomic write: temp file → rename (avoids TOCTOU race)
+  const tmp = join(dir, `.${taskId}.tmp`)
+  writeFileSync(tmp, JSON.stringify(task, null, 2))
+  renameSync(tmp, file)
+
   touchWorkgroup(teamId)
   return task
 }
@@ -99,7 +104,11 @@ export function updateTask(teamId: string, taskId: string, status: TaskStatus): 
   const task = JSON.parse(readFileSync(file, "utf-8")) as Task
   task.status = status
   task.updatedAt = new Date().toISOString()
-  writeFileSync(file, JSON.stringify(task, null, 2))
+
+  // Atomic write: temp file → rename (avoids TOCTOU race)
+  const tmp = join(dir, `.${taskId}.tmp`)
+  writeFileSync(tmp, JSON.stringify(task, null, 2))
+  renameSync(tmp, file)
 
   // Refresh workgroup timestamp
   touchWorkgroup(teamId)
@@ -112,6 +121,9 @@ function touchWorkgroup(teamId: string): void {
   try {
     const state = JSON.parse(readFileSync(stateFile, "utf-8"))
     state.updatedAt = new Date().toISOString()
-    writeFileSync(stateFile, JSON.stringify(state, null, 2))
+    // Atomic write for workgroup state too
+    const tmp = `${stateFile}.tmp`
+    writeFileSync(tmp, JSON.stringify(state, null, 2))
+    renameSync(tmp, stateFile)
   } catch { /* best effort */ }
 }
