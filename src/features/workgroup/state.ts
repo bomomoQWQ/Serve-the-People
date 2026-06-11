@@ -6,6 +6,7 @@
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync } from "node:fs"
 import { join } from "node:path"
+import { projectTeamsRoot } from "../../shared/paths"
 
 export type WorkgroupStatus = "creating" | "active" | "completed" | "failed"
 
@@ -19,7 +20,12 @@ export interface WorkgroupState {
   updatedAt: string
 }
 
-const STATE_DIR = ".servethepeople/teams"
+let STATE_DIR = ".servethepeople/teams"
+
+/** Initialize storage path from workspace root. Call once during plugin init. */
+export function initWorkgroupState(basePath: string): void {
+  STATE_DIR = projectTeamsRoot(basePath)
+}
 
 /** Create a new workgroup */
 export function createWorkgroup(teamId: string, name: string, members: string[], plan: string): WorkgroupState {

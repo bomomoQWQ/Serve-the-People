@@ -27,7 +27,7 @@ import {
 } from "../../features/workgroup/tasklist"
 import { sendMessage, pollInbox } from "../../features/workgroup/mailbox"
 import { ackMessage } from "../../features/workgroup/mailbox"
-import { registerSession, findSessionByMember } from "../../features/workgroup/session-registry"
+import { registerSession, findSessionByMember, findSessionsByTeam, unregisterSession } from "../../features/workgroup/session-registry"
 
 /**
  * Create all workgroup-related tools.
@@ -361,6 +361,13 @@ export function createWorkgroupTools(ctx: PluginInput): Record<string, ToolDefin
     execute: async (args) => {
       const teamId = args.team_id as string
       const { cleanupWorkgroup } = await import("../../features/workgroup/state")
+
+      // Clean up session registry entries for all members of this team
+      const sessionIds = findSessionsByTeam(teamId)
+      for (const sid of sessionIds) {
+        unregisterSession(sid)
+      }
+
       const cleaned = cleanupWorkgroup(teamId)
       if (cleaned) {
         return `✅ 工作组 ${teamId} 已解散，临时数据已清理。archives 和 skills 不受影响。`

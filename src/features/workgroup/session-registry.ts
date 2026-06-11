@@ -35,3 +35,12 @@ export function findSessionByMember(teamId: string, agent: string): string | und
   }
   return undefined
 }
+
+/** Find all session IDs registered for a given team. */
+export function findSessionsByTeam(teamId: string): string[] {
+  const ids: string[] = []
+  for (const [sid, entry] of registry) {
+    if (entry.teamIds.includes(teamId)) ids.push(sid)
+  }
+  return ids
+}

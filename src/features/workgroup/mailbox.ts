@@ -10,6 +10,7 @@
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync, renameSync } from "node:fs"
 import { join } from "node:path"
+import { projectTeamsRoot } from "../../shared/paths"
 
 export interface Message {
   messageId: string
@@ -20,7 +21,12 @@ export interface Message {
   timestamp: string
 }
 
-const MAILBOX_DIR = ".servethepeople/teams"
+let MAILBOX_DIR = ".servethepeople/teams"
+
+/** Initialize mailbox path from workspace root. Call once during plugin init. */
+export function initMailbox(basePath: string): void {
+  MAILBOX_DIR = projectTeamsRoot(basePath)
+}
 
 function ensureDir(path: string): void {
   if (!existsSync(path)) {

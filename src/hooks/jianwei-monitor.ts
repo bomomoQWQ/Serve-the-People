@@ -9,6 +9,7 @@ import {
   MAX_ESCALATION,
   ESCALATION_HIERARCHY,
 } from "./constants"
+import { mkdir, writeFile } from "node:fs/promises"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -350,8 +351,6 @@ async function writeReport(
   dir: string,
   report: JianweiReport,
 ): Promise<void> {
-  // Use dynamic import so the module compiles in both Bun & Node.
-  const { mkdir, writeFile } = await import("node:fs/promises")
   await mkdir(dir, { recursive: true })
   const filename = `jianwei-${Date.now()}.json`
   await writeFile(`${dir}/${filename}`, JSON.stringify(report, null, 2), "utf-8")

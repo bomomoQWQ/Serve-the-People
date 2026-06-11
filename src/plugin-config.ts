@@ -1,6 +1,6 @@
 import type { ServeThePeopleConfig } from "./config"
 import { ServeThePeopleConfigSchema, DEFAULT_CONFIG } from "./config"
-import { existsSync, readFileSync, mkdirSync } from "node:fs"
+import { existsSync, readFileSync, mkdirSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 import { homedir } from "node:os"
 
@@ -87,8 +87,6 @@ export function ensureDefaultConfig(workspaceRoot?: string): void {
   try {
     mkdirSync(configDir, { recursive: true })
     const defaultContent = JSON.stringify(DEFAULT_CONFIG, null, 2)
-      .replace(/\n/g, "\n")
-    const { writeFileSync } = require("node:fs") as typeof import("node:fs")
     writeFileSync(configPath, `// ${CONFIG_BASENAME} plugin configuration\n${defaultContent}\n`, "utf-8")
   } catch {
     // Optional — don't block plugin init for this

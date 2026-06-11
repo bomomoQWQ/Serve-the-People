@@ -5,6 +5,7 @@
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync, renameSync } from "node:fs"
 import { join } from "node:path"
+import { projectTeamsRoot } from "../../shared/paths"
 
 export type TaskStatus = "pending" | "claimed" | "in_progress" | "completed"
 
@@ -19,7 +20,12 @@ export interface Task {
   updatedAt: string
 }
 
-const TASKS_DIR = ".servethepeople/teams"
+let TASKS_DIR = ".servethepeople/teams"
+
+/** Initialize tasklist path from workspace root. Call once during plugin init. */
+export function initTasklist(basePath: string): void {
+  TASKS_DIR = projectTeamsRoot(basePath)
+}
 
 function tasksDir(teamId: string): string {
   const dir = join(TASKS_DIR, teamId, "tasks")

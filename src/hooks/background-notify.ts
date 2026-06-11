@@ -27,7 +27,6 @@ export async function handleBackgroundTaskIdle(
 
   registry.delete(sessionId)
 
-  const text = `${entry.sessionId.slice(0,8)}: ${entry.agent}`
   const notification = `<system-reminder>
 ${entry.agent}的同志已完成任务。
 
@@ -52,7 +51,7 @@ ${entry.agent}的同志已完成任务。
 
   // Fallback: queue for next chat.message
   const list = pending.get(entry.parentSessionId) ?? []
-  list.push(text)
+  list.push(notification)
   pending.set(entry.parentSessionId, list)
 }
 
@@ -65,8 +64,8 @@ export function injectPendingNotifications(sessionId: string): string | null {
   return `<system-reminder>
 以下同志已完成任务：
 
-${list.join("\n")}
+${list.join("\n\n")}
 
-请用 \`stp_background_output(task_id="<id>")\` 收取报告。
+请用 \`stp_background_output(task_id="<完整 session ID>")\` 收取报告。
 </system-reminder>`
 }

@@ -8,6 +8,10 @@ import { createManagers } from "../create-managers"
 import { createPluginInterface } from "../plugin-interface"
 import { createWorkgroupIdleWake } from "../hooks/workgroup-idle-wake"
 import { JianweiMonitor } from "../hooks/jianwei-monitor"
+import { initWorkgroupState } from "../features/workgroup/state"
+import { initMailbox } from "../features/workgroup/mailbox"
+import { initTasklist } from "../features/workgroup/tasklist"
+import { initPipelineState } from "../features/pipeline/state"
 import type { AgentConfig } from "@opencode-ai/sdk"
 
 /**
@@ -26,6 +30,12 @@ export function createPluginModule(): PluginModule {
   const serverPlugin: Plugin = async (input): Promise<Hooks> => {
     const pluginConfig = loadPluginConfig(input.directory)
     ensureDefaultConfig(input.directory)
+
+    // Initialize storage paths from workspace root (prevents cwd dependency)
+    initWorkgroupState(input.directory)
+    initMailbox(input.directory)
+    initTasklist(input.directory)
+    initPipelineState(input.directory)
 
     // Create built-in agents with model overrides from config
     const modelOverrides: Record<string, string> = {}

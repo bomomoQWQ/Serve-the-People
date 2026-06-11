@@ -4,6 +4,8 @@
  */
 
 import { mkdirSync, existsSync, readFileSync, writeFileSync, rmSync } from "node:fs"
+import { join } from "node:path"
+import { projectRoot } from "../../shared/paths"
 
 export enum PipelineState {
   IDLE = "IDLE", INTAKE = "INTAKE", QA = "QA",
@@ -24,9 +26,14 @@ export interface PipelineTask {
   updatedAt: string
 }
 
-const STORAGE_DIR = ".servethepeople/pipelines"
+let STORAGE_DIR = ".servethepeople/pipelines"
 
-function taskPath(taskId: string): string { return `${STORAGE_DIR}/${taskId}.json` }
+/** Initialize pipeline storage path from workspace root. Call once during plugin init. */
+export function initPipelineState(basePath: string): void {
+  STORAGE_DIR = join(projectRoot(basePath), "pipelines")
+}
+
+function taskPath(taskId: string): string { return join(STORAGE_DIR, `${taskId}.json`) }
 
 function ensureStorage(): void {
   if (!existsSync(STORAGE_DIR)) mkdirSync(STORAGE_DIR, { recursive: true })
