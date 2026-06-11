@@ -13,6 +13,14 @@ import { getWorkgroup, updateWorkgroupStatus } from "../workgroup/state"
 import { AUDIT_CHECKLIST } from "./checklist-defs"
 import { sendMessage } from "../workgroup/mailbox"
 import { persistAuditState } from "../../tools/shenjishu/tools"
+import { projectTeamsRoot } from "../../shared/paths"
+
+let TEAMS_BASE = ".servethepeople/teams"
+
+/** Initialize audit path. Call once during plugin init. */
+export function initShenjishuAutoTrigger(basePath: string): void {
+  TEAMS_BASE = projectTeamsRoot(basePath)
+}
 
 export interface AuditResult {
   workgroupId: string
@@ -78,7 +86,7 @@ export async function runAudit(workgroupId: string): Promise<AuditResult> {
 }
 
 function readAuditState(workgroupId: string): { round: number; lastFailures: string[] } | null {
-  const path = join(".servethepeople/teams", workgroupId, "audit.json")
+  const path = join(TEAMS_BASE, workgroupId, "audit.json")
   if (!existsSync(path)) return null
   try {
     const data = JSON.parse(readFileSync(path, "utf-8"))
@@ -93,6 +101,6 @@ export function getAuditHistory(workgroupId: string) {
 }
 
 export function clearAuditHistory(workgroupId: string) {
-  const path = join(".servethepeople/teams", workgroupId, "audit.json")
+  const path = join(TEAMS_BASE, workgroupId, "audit.json")
   if (existsSync(path)) unlinkSync(path)
 }

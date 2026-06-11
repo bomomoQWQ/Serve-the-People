@@ -12,6 +12,8 @@ import { initWorkgroupState } from "../features/workgroup/state"
 import { initMailbox } from "../features/workgroup/mailbox"
 import { initTasklist } from "../features/workgroup/tasklist"
 import { initPipelineState } from "../features/pipeline/state"
+import { initShenjishuState } from "../tools/shenjishu/tools"
+import { initShenjishuAutoTrigger } from "../features/shenjishu/auto-trigger"
 import type { AgentConfig } from "@opencode-ai/sdk"
 
 /**
@@ -36,6 +38,8 @@ export function createPluginModule(): PluginModule {
     initMailbox(input.directory)
     initTasklist(input.directory)
     initPipelineState(input.directory)
+    initShenjishuState(input.directory)
+    initShenjishuAutoTrigger(input.directory)
 
     // Create built-in agents with model overrides from config
     const modelOverrides: Record<string, string> = {}

@@ -122,7 +122,7 @@ export function updateTask(teamId: string, taskId: string, status: TaskStatus): 
 }
 
 function touchWorkgroup(teamId: string): void {
-  const stateFile = join(".servethepeople/teams", teamId, "state.json")
+  const stateFile = join(TASKS_DIR, teamId, "state.json")
   if (!existsSync(stateFile)) return
   try {
     const state = JSON.parse(readFileSync(stateFile, "utf-8"))

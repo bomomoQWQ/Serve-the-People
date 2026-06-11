@@ -9,8 +9,14 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 import { tool, type ToolDefinition } from "@opencode-ai/plugin/tool"
+import { projectTeamsRoot } from "../../shared/paths"
 
-const TEAMS_BASE = ".servethepeople/teams"
+let TEAMS_BASE = ".servethepeople/teams"
+
+/** Initialize audit storage path. Call once during plugin init. */
+export function initShenjishuState(basePath: string): void {
+  TEAMS_BASE = projectTeamsRoot(basePath)
+}
 
 interface AuditState {
   workgroupId: string

@@ -61,11 +61,6 @@ export function injectPendingNotifications(sessionId: string): string | null {
 
   pending.delete(sessionId)
 
-  return `<system-reminder>
-以下同志已完成任务：
-
-${list.join("\n\n")}
-
-请用 \`stp_background_output(task_id="<完整 session ID>")\` 收取报告。
-</system-reminder>`
+  // Each notification is already a complete <system-reminder> block
+  return list.join("\n")
 }
