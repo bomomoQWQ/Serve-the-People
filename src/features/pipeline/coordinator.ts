@@ -136,8 +136,6 @@ function handlePlanning(task: PipelineTask, _userText: string): StepResult {
 /** User approves plan → spawn workgroup */
 function handleApproval(task: PipelineTask, userText: string): StepResult {
   if (_isApproval(userText)) {
-    transitionState(task.taskId, PipelineState.SPAWNING)
-
     const workgroupId = `GW-${new Date().toISOString().slice(0, 7).replace(/-/g, "-")}-${String(Date.now() % 1000).padStart(3, "0")}`
     attachWorkgroup(task.taskId, workgroupId)
     transitionState(task.taskId, PipelineState.EXECUTING)

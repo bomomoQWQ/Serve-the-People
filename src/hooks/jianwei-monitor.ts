@@ -10,6 +10,8 @@ import {
   ESCALATION_HIERARCHY,
 } from "./constants"
 import { mkdir, writeFile } from "node:fs/promises"
+import { join } from "node:path"
+import { projectTeamsRoot } from "../shared/paths"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -68,7 +70,7 @@ export class JianweiMonitor {
   ) {
     this.client = client
     this.config = config
-    this.mailboxDir = `${worktree}/.servethepeople/teams/monitoring/mailbox/guowuyuan`
+    this.mailboxDir = join(projectTeamsRoot(worktree), "monitoring", "mailbox", "guowuyuan")
     this.start()
   }
 

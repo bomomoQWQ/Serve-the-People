@@ -5,6 +5,7 @@ import type { BuiltinMcpConfig } from "./mcp/types"
 import { processUserMessage } from "./features/pipeline/coordinator"
 import { createWorkgroupMailboxInjector, type MailboxInjectorHook } from "./hooks/workgroup-mailbox-injector"
 import { handleBackgroundTaskIdle, injectPendingNotifications } from "./hooks/background-notify"
+import { lookupSession } from "./features/workgroup/session-registry"
 
 /** In-memory pipeline state per session */
 const sessions = new Map<string, { taskId?: string }>()
@@ -86,6 +87,10 @@ export function createPluginInterface(
         .join("\n")
 
       if (!userText) return
+
+      // Skip pipeline for non-国务院 workgroup member sessions
+      const member = lookupSession(sessionId)
+      if (member && member.agent !== "guowuyuan") return
 
       // Inject pending background notifications
       const note = injectPendingNotifications(sessionId)
