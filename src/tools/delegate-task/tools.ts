@@ -33,6 +33,7 @@ export function createDelegateTask(ctx: PluginInput): Record<string, ToolDefinit
       if (!agentSources[agent as keyof typeof agentSources]) {
         return `Error: Unknown agent "${agent}". Available: ${Object.keys(agentSources).join(", ")}`
       }
+      if (agent === "guowuyuan") return "Error: 国务院不应通过 stp_task 自 spawn。国务院是主会话协调中枢，无需另开实例。"
 
       const ctx = context as Record<string, unknown>
       const parentSessionId = (ctx.sessionID ?? ctx.session_id ?? "") as string

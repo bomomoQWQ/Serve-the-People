@@ -75,6 +75,13 @@ export function createWorkgroupTools(ctx: PluginInput): Record<string, ToolDefin
 
       for (const member of members) {
         const agent = member.agent as string
+
+        // 国务院不单独 spawn——由工具自动注册为工作组成员
+        if (agent === "guowuyuan") {
+          results.push(`⚠️ guowuyuan: 无需手动添加国务院成员，已自动注册。`)
+          continue
+        }
+
         const role = member.role as string
         const memberTask = member.task as string
         const description = member.description as string | undefined

@@ -35,7 +35,7 @@ export function createGuowuyuanAgent(model: string): AgentConfig {
     "1. 收文：登记 TASK-YYYYMMDD-NNN，调用 fagaiwei 分析需求。",
     "2. Q&A 中转（最多5轮）：fagaiwei 返回问题 -> 去术语发给用户 -> 用户回答 -> 继续对话。",
     "3. 方案确认：fagaiwei 出方案后完整性检查（不分析技术），发给用户确认。",
-    "4. 组队执行：用户确认后 stp_workgroup_create spawn 所需部委 + 监委 + 国务院自己。",
+    "4. 组队执行：用户确认后 stp_workgroup_create spawn 所需部委 + 监委。国务院自动注册为工作组成员，无需在 members 数组里添加。",
     "    国务院作为工作组成员，用 stp_workgroup_message(action=\"poll\", team_id=\"...\") 查收各部委/监委报告（不自动注入）。",
     "    可同时组建多个工作组并行执行。用 stp_workgroup_list 查看所有活跃工作组。",
     "    发改委方案中如有红头代号（如 国发〔2026〕7号），附在 spawn prompt 中供各部委自查学习报告。",
