@@ -69,10 +69,18 @@ export function processUserMessage(
       return handleApproval(task, userText)
 
     case PipelineState.EXECUTING:
-      return {
-        systemMessage: `Workgroup ${task.workgroupId} is executing. Awaiting completion.`,
-        awaitingUser: true,
+      // Workgroup is running independently. If user sends a new task request,
+      // start a fresh pipeline rather than blocking.
+      if (_isNewTask(userText)) {
+        const newTask = createPipelineTask(userText)
+        return {
+          systemMessage: buildIntakePrompt(newTask, userText),
+          userMessage: `新任务 ${newTask.taskId} 已登记。`,
+          awaitingUser: false,
+        }
       }
+      // Message is about existing workgroup — let 国务院 handle directly
+      return { awaitingUser: false }
 
     default:
       return { awaitingUser: true }
@@ -208,4 +216,13 @@ function _isFagaiweiQuestion(text: string): boolean {
 function _isApproval(text: string): boolean {
   const t = text.toLowerCase().trim()
   return t === "可以" || t === "搞" || t === "yes" || t === "ok" || t === "批准" || t === "行" || t === "好" || t === "开始"
+}
+
+function _isNewTask(text: string): boolean {
+  // Heuristic: message contains task-like opening keywords → treat as new task request
+  return text.length > 10 && (
+    text.startsWith("搞") || text.startsWith("做") || text.startsWith("写") || text.startsWith("建") ||
+    text.startsWith("开始") || text.startsWith("帮我") || text.startsWith("请") ||
+    text.startsWith("测试") || text.startsWith("实现") || text.startsWith("创建")
+  )
 }
