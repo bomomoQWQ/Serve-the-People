@@ -38,25 +38,32 @@ export function createDelegateTask(ctx: PluginInput): Record<string, ToolDefinit
       const parentSessionId = (ctx.sessionID ?? ctx.session_id ?? "") as string
       const parentAgent = (ctx.agent ?? ctx.agentID ?? ctx.agent_id ?? "guowuyuan") as string
 
+      // Background mode: fire-and-forget, don't block on session.prompt
+      if (runInBackground) {
+        const task = await manager.launchAsync({
+          agent,
+          prompt,
+          description: args.description as string | undefined,
+          parentSessionId,
+        })
+        if (task.status === "error") {
+          return `Error: ${task.error}`
+        }
+        // Register for background completion notification
+        registerBackgroundTask({ sessionId: task.sessionId, parentSessionId, parentAgent, agent })
+        return `Task dispatched: ${task.sessionId}\nAgent: ${agent}\nWait for <system-reminder> notification then use stp_background_output(task_id="${task.sessionId}") to collect results.`
+      }
+
+      // Sync mode: launch + poll for completion
       const task = await manager.launch({
         agent,
         prompt,
         description: args.description as string | undefined,
         parentSessionId,
-        onSessionCreated: runInBackground
-          ? (sid) => registerBackgroundTask({ sessionId: sid, parentSessionId, parentAgent, agent })
-          : undefined,
       })
-
       if (task.status === "error") {
         return `Error: ${task.error}`
       }
-
-      if (runInBackground) {
-        return `Task dispatched: ${task.sessionId}\nAgent: ${agent}\nWait for <system-reminder> notification then use stp_background_output(task_id="${task.sessionId}") to collect results.`
-      }
-
-      // Sync mode: poll for completion
       const result = await manager.poll(task.sessionId)
       if (result.status === "completed") {
         return result.output ?? "(no output)"
