@@ -18,8 +18,8 @@ function buildWakeHint(count: number): string {
   return `[系统]\n你的信箱有 ${count} 条新工作组消息。新的消息将在当前轮次通过 mailbox 注入。请查看并处理。`
 }
 
-function buildWakeBatchKey(teamId: string, agent: string, messageIds: string[]): string {
-  return `${teamId}:${agent}:${[...messageIds].sort().join(",")}`
+function buildWakeBatchKey(teamIds: string[], agent: string, messageIds: string[]): string {
+  return `${[...teamIds].sort().join(",")}:${agent}:${[...messageIds].sort().join(",")}`
 }
 
 const WAKE_HINT_SUPPRESS_MS = 30_000
@@ -46,7 +46,8 @@ export function createWorkgroupIdleWake(ctx: WakeContext) {
 
     if (member.agent === "guowuyuan") return
 
-    const messages = pollInbox(member.teamIds[0], member.agent)
+    // Poll all teams the session belongs to
+    const messages = member.teamIds.flatMap((tid) => pollInbox(tid, member.agent))
 
     // 监委：即使无消息也定时唤醒，用 setTimeout 兜底避免 idle 只触发一次
     if (member.agent === "jianwei") {
@@ -104,7 +105,7 @@ export function createWorkgroupIdleWake(ctx: WakeContext) {
 
     // Deduplicate: don't repeatedly wake for the same message batch
     const batchKey = buildWakeBatchKey(
-      member.teamIds[0],
+      member.teamIds,
       member.agent,
       messages.map((m) => m.messageId),
     )
