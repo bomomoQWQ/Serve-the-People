@@ -40,13 +40,13 @@ export async function tryTriggerAudit(workgroupId: string): Promise<AuditResult 
   const allDone = tasks.every((t: Task) => t.status === "completed")
   if (!allDone) return null
 
-  return await runAudit(workgroupId)
+  return runAudit(workgroupId)
 }
 
 /**
  * 发送验收触发通知给国务院。
  */
-export async function runAudit(workgroupId: string): Promise<AuditResult> {
+export function runAudit(workgroupId: string): AuditResult {
   const existing = readAuditState(workgroupId)
   const round = (existing?.round ?? 0) + 1
 

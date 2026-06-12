@@ -1,5 +1,7 @@
-export type { AgentMode, AgentFactory, AgentPromptMetadata } from "./types"
+export type { AgentMode, AgentFactory } from "./types"
 export { createAgentToolRestrictions, isGptModel } from "./types"
+export { BUILTIN_AGENT_NAMES, agentSources } from "./builtin"
+export type { BuiltinAgentName } from "./builtin"
 export { createCanshishiAgent } from "./canshishi"
 export { createXinxizhongxinAgent } from "./xinxizhongxin"
 export { createFenxibanAgent } from "./fenxiban"

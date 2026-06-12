@@ -6,16 +6,6 @@ export type AgentMode = "primary" | "subagent" | "all"
 /** Factory function signature — must have static .mode property */
 export type AgentFactory = ((model: string) => AgentConfig) & { mode: AgentMode }
 
-/** Metadata for prompt generation */
-export interface AgentPromptMetadata {
-  category: string
-  cost: "FREE" | "CHEAP" | "EXPENSIVE"
-  promptAlias?: string
-  triggers?: Array<{ domain: string; trigger: string }>
-  useWhen?: string[]
-  avoidWhen?: string[]
-}
-
 /** Permission value for individual tools */
 export type PermissionValue = "ask" | "allow" | "deny"
 
