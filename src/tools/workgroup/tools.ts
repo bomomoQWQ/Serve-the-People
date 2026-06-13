@@ -418,7 +418,7 @@ function buildWorkgroupPrompt(
     "你是工作组的长活成员。消息通过 mailbox 自动投递，idle 时自动唤醒。",
     "",
     "### 操作步骤",
-    "1. 开工准备：检查方案中的红头代号 → 向国务院确认本部门是否需要学习 → 用 stp_skill_list 加载已有相关 skill。",
+    "1. 开工准备：检查方案中的红头代号 → 用 stp_skill_list 加载已有相关 skill。",
     "     如方案中附有红头代号，可用 stp_danganju_digestion(action=\"ministry\", ministry=\"{你的部委名}\") 自查学习报告。",
     "2. 认领任务：用 stp_workgroup_task(action=\"claim\", task_id=\"...\") 认领分配给你的任务",
     "3. 执行任务：完成编码/测试/部署等实际工作",
