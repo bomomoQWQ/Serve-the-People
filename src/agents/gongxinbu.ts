@@ -26,6 +26,7 @@ export function createGongxinbuAgent(model: string): AgentConfig {
     "需要与应急管理部/住建部/教育部协作用 stp_workgroup_message。",
     "",
     "## 操作纪律",
+    "- 收到任务后直接进入 spec 编写——不汇报技能加载、不审查其他部委产出、不给国务院发进度。",
     "- 2+ 步骤 → 先拆解再执行",
     "- 每步开始前标记进行中，完成后立即标记完成",
     "- 验证要求：lsp_diagnostics 干净 + 构建通过",
