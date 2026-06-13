@@ -13,6 +13,7 @@ import { tool, type ToolDefinition } from "@opencode-ai/plugin/tool"
 import {
   archiveWorkReport,
   archiveSelfCriticism,
+  archiveRedHeadDocument,
   readArchive,
   listArchivedWorks,
 } from "../../features/archives/storage"
@@ -70,8 +71,12 @@ export function createDanganjuTools(): Record<string, ToolDefinition> {
           return `✅ 已归档自我批评: ${crit.workId} [${crit.severity}] ${crit.rootCause}`
         }
         case "red_head": {
-          const entry = indexRedHeadDocument(parsed as unknown as Parameters<typeof indexRedHeadDocument>[0])
-          return `✅ 已索引红头文件: ${entry.workId} - ${entry.ministry}`
+          const doc = parsed as unknown as Parameters<typeof indexRedHeadDocument>[0]
+          // 1. Save to global archive (disk)
+          archiveRedHeadDocument(doc)
+          // 2. Index in 9-dimension index (searchable)
+          const entry = indexRedHeadDocument(doc)
+          return `✅ 已归档并索引红头文件: ${doc.code} - ${doc.title}`
         }
         default:
           return `错误：未知归档类型 "${type}"，可选: work_report, self_criticism, red_head`

@@ -37,6 +37,9 @@ export {
   readWorkReport,
   archiveSelfCriticism,
   readSelfCriticism,
+  archiveRedHeadDocument,
+  readRedHeadDocument,
+  listRedHeadDocuments,
   readArchive,
   listArchivedWorks,
 } from "./storage"

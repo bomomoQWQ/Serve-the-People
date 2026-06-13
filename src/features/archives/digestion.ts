@@ -6,25 +6,33 @@
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
+import { z } from "zod"
 import { ARCHIVE_ROOT_GLOBAL } from "../../shared/paths"
 import type { DigestionEntry, DigestionStatus, MinistryName } from "./templates"
 
 const DIGESTION_FILE = join(ARCHIVE_ROOT_GLOBAL, "digestion.json")
 
-function ensureDir(path: string): void {
-  if (!existsSync(path)) {
-    mkdirSync(path, { recursive: true })
-  }
-}
-
-// ─── 读写持久化 ─────────────────────────────────────────────────────
+const DigestionEntrySchema = z.object({
+  ministry: z.string(),
+  redHeadCode: z.string(),
+  status: z.enum(["已接收", "已学习", "已生成skill", "已消化"]),
+  skillName: z.string().optional(),
+  digestedAt: z.string().optional(),
+})
 
 function readDigestionFile(): DigestionEntry[] {
   if (!existsSync(DIGESTION_FILE)) return []
   try {
-    return JSON.parse(readFileSync(DIGESTION_FILE, "utf-8")) as DigestionEntry[]
+    const raw = JSON.parse(readFileSync(DIGESTION_FILE, "utf-8"))
+    return z.array(DigestionEntrySchema).parse(raw) as DigestionEntry[]
   } catch {
     return []
+  }
+}
+
+function ensureDir(path: string): void {
+  if (!existsSync(path)) {
+    mkdirSync(path, { recursive: true })
   }
 }
 

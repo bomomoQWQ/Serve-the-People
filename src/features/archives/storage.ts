@@ -7,7 +7,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 import { join } from "node:path"
 import { z } from "zod"
 import { ARCHIVE_ROOT_GLOBAL } from "../../shared/paths"
-import type { WorkReport, SelfCriticism } from "./templates"
+import type { WorkReport, SelfCriticism, RedHeadDocument } from "./templates"
 
 // ─── 运行时校验 Schema ─────────────────────────────────────────────
 // Zod validators matching the type interfaces, used on read to catch corrupted data.
@@ -48,6 +48,7 @@ const SelfCriticismSchema = z.object({
 })
 
 const WORKS_DIR = join(ARCHIVE_ROOT_GLOBAL, "works")
+const REDHEADS_DIR = join(ARCHIVE_ROOT_GLOBAL, "redheads")
 
 // ─── 懒初始化 ───────────────────────────────────────────────────────
 
@@ -104,6 +105,50 @@ export function readSelfCriticism(workId: string): SelfCriticism | null {
     return SelfCriticismSchema.parse(raw) as SelfCriticism
   } catch {
     return null
+  }
+}
+
+// ─── 红头文件 ───────────────────────────────────────────────────────
+
+const REDHEAD_SCHEMA = z.object({
+  code: z.string(),
+  title: z.string(),
+  content: z.string(),
+  issuedBy: z.string(),
+  issuedAt: z.string(),
+  relatedCategories: z.array(z.string()),
+})
+
+/** 归档一份红头文件（全局存储，按 code 去重） */
+export function archiveRedHeadDocument(doc: RedHeadDocument): RedHeadDocument {
+  ensureDir(REDHEADS_DIR)
+  const filePath = join(REDHEADS_DIR, `${doc.code.replace(/[\/\\:*?"<>|]/g, "_")}.json`)
+  writeFileSync(filePath, JSON.stringify(doc, null, 2), "utf-8")
+  return doc
+}
+
+/** 按 code 读取红头文件 */
+export function readRedHeadDocument(code: string): RedHeadDocument | null {
+  const filePath = join(REDHEADS_DIR, `${code.replace(/[\/\\:*?"<>|]/g, "_")}.json`)
+  if (!existsSync(filePath)) return null
+  try {
+    const raw = JSON.parse(readFileSync(filePath, "utf-8"))
+    return REDHEAD_SCHEMA.parse(raw) as RedHeadDocument
+  } catch {
+    return null
+  }
+}
+
+/** 列出所有已归档的红头文件 */
+export function listRedHeadDocuments(): string[] {
+  if (!existsSync(REDHEADS_DIR)) return []
+  try {
+    return readdirSync(REDHEADS_DIR)
+      .filter(f => f.endsWith(".json"))
+      .map(f => f.replace(".json", ""))
+      .sort()
+  } catch {
+    return []
   }
 }
 
