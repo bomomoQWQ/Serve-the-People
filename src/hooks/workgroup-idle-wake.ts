@@ -44,7 +44,21 @@ export function createWorkgroupIdleWake(ctx: WakeContext) {
     const member = lookupSession(sessionId)
     if (!member) return
 
-    if (member.agent === "guowuyuan") return
+    // 国务院：不自动注入，但在有新消息时轻提示
+    if (member.agent === "guowuyuan") {
+      const messages = member.teamIds.flatMap((tid) => pollInbox(tid, member.agent))
+      if (messages.length === 0) return
+      if (ctx.client.session?.prompt) {
+        await ctx.client.session.prompt({
+          path: { id: sessionId },
+          body: {
+            agent: member.agent,
+            parts: [{ type: "text", text: `[系统] 你有 ${messages.length} 条未读工作组消息，请用 stp_workgroup_message(action="poll", team_id="...", to="guowuyuan") 查收。` }],
+          },
+        })
+      }
+      return
+    }
 
     // Poll all teams the session belongs to
     const messages = member.teamIds.flatMap((tid) => pollInbox(tid, member.agent))
