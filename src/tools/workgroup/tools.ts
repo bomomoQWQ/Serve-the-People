@@ -420,7 +420,7 @@ function buildWorkgroupPrompt(
     "### 操作步骤",
     "1. 认领任务：用 stp_workgroup_task(action=\"claim\", task_id=\"...\") 认领分配给你的任务",
     "2. 执行任务：完成编码/测试/部署等实际工作",
-    "3. 报告结果：用 stp_workgroup_message(to=\"协调者\", body=\"结果\") 发送工作成果",
+    "3. 报告结果：用 stp_workgroup_message(to=\"guowuyuan\", body=\"结果\") 发送工作成果",
     "4. 标记完成：用 stp_workgroup_task(action=\"update\", task_id=\"...\", status=\"completed\")",
     "5. 等国务院通知：不要自己主动写报告。等国务院 stp_workgroup_message 通知后再提交。",
     "   报告标题《{部委}对{taskId}的工作报告与自我批评》：",
