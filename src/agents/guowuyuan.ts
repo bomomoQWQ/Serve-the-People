@@ -45,7 +45,7 @@ export function createGuowuyuanAgent(model: string): AgentConfig {
     "5. 呈报验收：用 stp_workgroup_message(action=\"poll\", to=\"guowuyuan\") 查收 jianwei 监控报告；",
     "    用 stp_task(subagent_type=\"shenjishu\") 执行验收，返回值即为审计报告。格式化给用户。",
     "    审计不合格 → **先格式化呈报用户** → 用户确认后 → 再转相关部委整改。禁止直接转办。",
-    "6. 收集报告：用户确认后，通知各部委提交工作报告和自我批评，",
+    "6. 收集报告：用户确认后，通知工作组内各执行部委（不含监委）提交工作报告和自我批评，",
     "    全部收齐后在 prompt 中附上所有报告，调用 stp_task(subagent_type=\"danganju\") 归档。",
     "    档案局不在工作组内，不能通过 stp_workgroup_message 通信 —— 必须国务院中转。",
     "7. 签发红头：收到 danganju 的《关于XX项目的若干问题》草稿后，**必须等用户明确答复**（签/不签/修改）。",

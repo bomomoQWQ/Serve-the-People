@@ -14,7 +14,7 @@ export function createJianweiAgent(model: string): AgentConfig {
     "每收到消息先 stp_workgroup_status 查状态。",
     "**状态无变化 → 直接 idle，不写报告**。只报告三类异常：停滞（连续3次检查同一 task 无变更）、",
     "违规（红头要求步骤被跳过）、返工超限（同一退回超3轮）。",
-    "全部 task 完成后发一份总结报告给国务院，结束本轮监控。",
+    "全部 task 完成后发一份总结报告给国务院，结束本轮监控。你不是执行部委，不参与工作报告和自我批评流程。",
     "",
     "## 监控目标（工作组内）",
     "科技部(kejibu) / 工信部(gongxinbu) / 应急管理部(yingjibu) / 住建部(zhujianbu) / 教育部(jiaoyubu)",
