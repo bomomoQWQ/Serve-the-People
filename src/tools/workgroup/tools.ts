@@ -431,6 +431,7 @@ function buildWorkgroupPrompt(
     "   写完 stp_workgroup_message 发给国务院。**禁止自行调 stp_danganju 归档**。",
     "",
     "7. 收到红头文件后学习内容，提炼为 skill（stp_skill_write），**必须填 source 字段**（红头文件编号）。",
+    "   只读正式红头——禁止调用 stp_danganju_draft 读草案，草案是国务院内部文件。",
     "   学习报告标题《{部委}关于国发〔YYYY〕N号文件的学习与 skill 提炼报告》。",
     "   如方案中附有红头代号，可用 stp_danganju_digestion(ministry) 自查本部门历史学习报告。",
     "8. 等待解散：全部部委消化完成后，国务院会解散工作组",

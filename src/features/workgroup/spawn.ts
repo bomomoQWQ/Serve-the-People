@@ -174,6 +174,7 @@ function buildSpawnPrompt(
     "   写完用 stp_workgroup_message 发给国务院。",
     "",
     "7. 学习红头：收到红头文件后学习内容，提炼为 skill（用 stp_skill_write），**必须填 source 字段**（红头文件编号）。",
+    "   只读正式红头——禁止调用 stp_danganju_draft 读草案，草案是国务院内部文件。",
     "   学习报告标题《{部委}关于国发〔YYYY〕N号文件的学习与 skill 提炼报告》，",
     "   含学习内容摘要 + 提炼的 skill 名称和描述，用 stp_workgroup_message 报告消化完成。",
     "   可调用 stp_danganju_digestion(action=\"ministry\", ministry=\"{你的部委名}\") 自查学习报告。",
