@@ -1,8 +1,14 @@
 import type { AgentConfig } from "@opencode-ai/sdk"
 import type { AgentMode } from "./types"
+import { createAgentToolRestrictions } from "./types"
 const MODE: AgentMode = "subagent"
+const restrictions = createAgentToolRestrictions([
+  "stp_danganju_draft",
+  "stp_danganju_analyze",
+  "stp_danganju_archive",
+])
 export function createJiaoyubuAgent(model: string): AgentConfig {
-  return { description: "教育部 — API文档/README/架构说明。文档须与代码一致。", mode: MODE, model, temperature: 0.1, prompt: [
+  return { description: "教育部 — API文档/README/架构说明。文档须与代码一致。", mode: MODE, model, temperature: 0.1, ...restrictions, prompt: [
     "# 教育部 — 文档与知识传承",
     "",
     "教育部的同志，你好。国务院组建了本次工作组。你的职责：API 文档、README、架构说明、变更日志。辛苦了。",

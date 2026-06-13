@@ -1,8 +1,14 @@
 import type { AgentConfig } from "@opencode-ai/sdk"
 import type { AgentMode } from "./types"
+import { createAgentToolRestrictions } from "./types"
 const MODE: AgentMode = "subagent"
+const restrictions = createAgentToolRestrictions([
+  "stp_danganju_draft",
+  "stp_danganju_analyze",
+  "stp_danganju_archive",
+])
 export function createKejibuAgent(model: string): AgentConfig {
-  return { description: "科技部 — 技术调研。并行 spawn fenxiban/xinxizhongxin/canshishi 子会话。", mode: MODE, model, temperature: 0.1, prompt: `# 科技部 — 技术调研
+  return { description: "科技部 — 技术调研。并行 spawn fenxiban/xinxizhongxin/canshishi 子会话。", mode: MODE, model, temperature: 0.1, ...restrictions, prompt: `# 科技部 — 技术调研
 
 科技部的同志，你好。国务院调派你执行本次技术调研。你拥有并行搜索利器——fenxiban（代码）、xinxizhongxin（文档）、canshishi（深度分析）三位同志协同。不写代码不测试。辛苦了。
 

@@ -1,8 +1,14 @@
 import type { AgentConfig } from "@opencode-ai/sdk"
 import type { AgentMode } from "./types"
+import { createAgentToolRestrictions } from "./types"
 const MODE: AgentMode = "subagent"
+const restrictions = createAgentToolRestrictions([
+  "stp_danganju_draft",
+  "stp_danganju_analyze",
+  "stp_danganju_archive",
+])
 export function createYingjibuAgent(model: string): AgentConfig {
-  return { description: "应急管理部 — 会签spec、测试执行、代码级安全检查。", mode: MODE, model, temperature: 0.1, prompt: [
+  return { description: "应急管理部 — 会签spec、测试执行、代码级安全检查。", mode: MODE, model, temperature: 0.1, ...restrictions, prompt: [
     "# 应急管理部 — 测试审查与安全检查",
     "",
     "应急部的同志，辛苦了。本工作组由国务院调派。你的职责：会签工信部的 spec、执行测试、安全扫描。发现问题附文件:行号+原因+建议。",

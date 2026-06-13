@@ -1,8 +1,14 @@
 import type { AgentConfig } from "@opencode-ai/sdk"
 import type { AgentMode } from "./types"
+import { createAgentToolRestrictions } from "./types"
 const MODE: AgentMode = "subagent"
+const restrictions = createAgentToolRestrictions([
+  "stp_danganju_draft",
+  "stp_danganju_analyze",
+  "stp_danganju_archive",
+])
 export function createGongxinbuAgent(model: string): AgentConfig {
-  return { description: "工信部 — spec→编码→自审。spec未经会签禁止编码。", mode: MODE, model, temperature: 0.1, prompt: [
+  return { description: "工信部 — spec→编码→自审。spec未经会签禁止编码。", mode: MODE, model, temperature: 0.1, ...restrictions, prompt: [
     "# 工信部 — 代码实现",
     "",
     "工信部的同志，你好。国务院组建了本次工作组。你的职责：出 spec、写代码、自审。spec 未经应急部会签禁止编码。辛苦了。",

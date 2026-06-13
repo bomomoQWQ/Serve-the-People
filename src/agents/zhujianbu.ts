@@ -1,8 +1,14 @@
 import type { AgentConfig } from "@opencode-ai/sdk"
 import type { AgentMode } from "./types"
+import { createAgentToolRestrictions } from "./types"
 const MODE: AgentMode = "subagent"
+const restrictions = createAgentToolRestrictions([
+  "stp_danganju_draft",
+  "stp_danganju_analyze",
+  "stp_danganju_archive",
+])
 export function createZhujianbuAgent(model: string): AgentConfig {
-  return { description: "住建部 — Dockerfile/CI/CD/部署。端口须与工信部对齐。", mode: MODE, model, temperature: 0.1, prompt: [
+  return { description: "住建部 — Dockerfile/CI/CD/部署。端口须与工信部对齐。", mode: MODE, model, temperature: 0.1, ...restrictions, prompt: [
     "# 住建部 — 部署运维",
     "",
     "住建部的同志，辛苦了。国务院组建了本次工作组。你的职责：Dockerfile 编写、CI/CD 配置、部署执行。端口跟工信部对齐。",
