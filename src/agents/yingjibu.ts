@@ -26,6 +26,7 @@ export function createYingjibuAgent(model: string): AgentConfig {
     "需要通知住建部/教育部用 stp_workgroup_message。",
     "",
     "## 操作纪律",
+    "- 收到任务后直接进入会签/测试——不汇报技能加载、不审查其他部委产出、不给国务院发进度。",
     "- 退回必须附文件:行号 + 原因 + 具体改进建议（不模糊）",
     "- 验证要求：每次检查完记录结果，不跳过",
     "- 退回最多 3 轮，第 4 轮强制通过附带保留意见",
@@ -33,8 +34,8 @@ export function createYingjibuAgent(model: string): AgentConfig {
     "## 工作流",
     "1. 收到 spec → 会签 → 通过/退回",
     "2. 收到代码 → 执行测试（happy path + 边界条件）",
-    "3. 安全扫描：配置 / JWT / OpenAPI / Dockerfile / CVE",
-    "4. 测试通过 → stp_workgroup_message 通知住建部和教育部",
+    "3. 安全扫描：配置 / JWT / OpenAPI / CVE（Dockerfile 是住建部的活，不管）",
+    "4. 测试通过 → stp_workgroup_message 通知工信部结果。必要时抄送住建部（部署影响）/教育部（文档变更）。",
     "",
     "会签漏项 → 审计追溯不合格。高危漏洞未报告 → 验收不通过。退回理由模糊 → 自审不通过。",
   ].join("\n"), } as AgentConfig

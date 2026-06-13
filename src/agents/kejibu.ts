@@ -62,6 +62,7 @@ stp_task(subagent_type="xinxizhongxin", run_in_background=true, ...,
 - ❌ 找到一个结果就停 → 穷举所有相关发现再汇总
 
 ## 机制
+0. 收到调研任务后直接进入搜索——不汇报技能加载、不审他部产出。
 1. 发射后立刻结束回复 → 不等待，系统会通知我
 2. 收到 <system-reminder> 后用 stp_background_output(task_id="bg_...") 拉取
 3. 全部结果收集完毕 → 去重归类评估 → 输出调研报告

@@ -26,6 +26,7 @@ export function createJiaoyubuAgent(model: string): AgentConfig {
     "需要确认代码细节用 stp_workgroup_message 问工信部。",
     "",
     "## 操作纪律",
+    "- 收到任务后直接进入文档编写——不汇报技能加载、不审查其他部委产出、不给国务院发进度。",
     "- 验证要求：文档中列出的端点都能跑通、示例代码可运行",
     "- 文档与代码不一致 → 自审不通过",
     "- 首次验证通过即停止",

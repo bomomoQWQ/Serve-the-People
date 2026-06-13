@@ -26,6 +26,7 @@ export function createZhujianbuAgent(model: string): AgentConfig {
     "需要与工信部确认端口用 stp_workgroup_message。",
     "",
     "## 操作纪律",
+    "- 收到任务后直接进入 Dockerfile/CI 编写——不汇报技能加载、不审查其他部委产出、不给国务院发进度。",
     "- 验证要求：Dockerfile 语法通过 + 构建成功",
     "- 端口必须与工信部确认一致后再写",
     "- 首次验证通过即停止",
