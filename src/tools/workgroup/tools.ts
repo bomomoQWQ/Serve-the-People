@@ -428,7 +428,7 @@ function buildWorkgroupPrompt(
     "   ## 二、自我批评 — 问题描述 / 根因 / 严重程度 / 改进建议",
     "   写完 stp_workgroup_message 发给国务院。**禁止自行调 stp_danganju 归档**。",
     "",
-    "6. 收到红头文件后学习内容，提炼为 skill（stp_skill_write），",
+    "6. 收到红头文件后学习内容，提炼为 skill（stp_skill_write），**必须填 source 字段**（红头文件编号）。",
     "   学习报告标题《{部委}关于国发〔YYYY〕N号文件的学习与 skill 提炼报告》。",
     "   如方案中附有红头代号，可用 stp_danganju_digestion(ministry) 自查本部门历史学习报告。",
     "7. 等待解散：全部部委消化完成后，国务院会解散工作组",

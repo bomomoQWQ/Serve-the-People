@@ -37,8 +37,8 @@ export function createSkillWriteTool(): ToolDefinition {
         .describe("触发条件列表（什么时候自动加载这个 skill）"),
       rules: tool.schema.array(tool.schema.string()).optional()
         .describe("规则列表（必须遵守的规定）"),
-      source: tool.schema.string().optional()
-        .describe("来源红头文件编号（如 国发〔2026〕1号）"),
+      source: tool.schema.string()
+        .describe("来源红头文件编号（必填，如 国发〔2026〕1号）"),
       body: tool.schema.string()
         .describe("Skill 正文（Markdown，含操作步骤、注意事项、示例）"),
     },
@@ -52,6 +52,9 @@ export function createSkillWriteTool(): ToolDefinition {
 
       if (!name.match(/^[a-z0-9-]+$/)) {
         return "错误：skill name 必须是 kebab-case（小写字母、数字、连字符）"
+      }
+      if (!source) {
+        return "错误：source（红头文件编号）必须提供。如: 国发〔2026〕1号"
       }
 
       const skillDir = join(SKILLS_ROOT_GLOBAL, name)
