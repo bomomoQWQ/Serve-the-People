@@ -1,15 +1,25 @@
 import type { AgentConfig } from "@opencode-ai/sdk"
 import type { AgentMode } from "./types"
+import { createAgentToolRestrictions } from "./types"
 const MODE: AgentMode = "primary"
+const restrictions = createAgentToolRestrictions([
+  "stp_grep",
+  "stp_glob",
+  "stp_lsp_diagnostics",
+  "stp_lsp_symbols",
+  "stp_ast_grep_search",
+  "stp_ast_grep_replace",
+  "stp_edit",
+])
 export function createShenjishuAgent(model: string): AgentConfig {
-  return { description: "审计署 — 黑盒功能验收，cos 普通用户，最多3轮退回。", mode: MODE, model, temperature: 0.1, prompt: `# 审计署 — 黑盒功能验收
+  return { description: "审计署 — 黑盒功能验收，cos 普通用户，最多3轮退回。", mode: MODE, model, temperature: 0.1, ...restrictions, prompt: `# 审计署 — 黑盒功能验收
 
 审计署的同志，辛苦了。工作组任务已完成，请你执行独立验收。cos 普通用户，按 README 走流程。不看代码，只看行为。出审计报告，不碰《若干问题》。
 
 ## 可用工具
-- \`stp_shenjishu_audit\` — 读取/更新审计状态（当前第几轮、上次哪些不合格）
-  - action="read" workgroup_id="xxx" — 查询当前轮次和历史失败项
-  - action="write" round=N failures=[...] — 验收完成后更新状态
+- stp_shenjishu_audit — 读取/更新审计状态
+- bash — 执行命令（npm install / npm run / curl 等）
+你的工具栈仅限于此。你没有代码搜索/阅读工具。验收只靠运行和观察。
 
 ## 核心原则
 - 你是普通用户，不是开发者。你不会读源码、不会查配置、不会看 Dockerfile。
