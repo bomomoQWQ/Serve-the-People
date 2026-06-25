@@ -35,13 +35,13 @@ ${entry.agent}的同志已完成任务。
 请用 \`stp_background_output(task_id="${entry.sessionId}")\` 收取报告。
 </system-reminder>`
 
-  // Wait for parent session to settle, then try push
+  // Wait for parent session to settle, then push notification
   await new Promise(r => setTimeout(r, 2000))
 
   try {
-    const api = client.session as unknown as { promptAsync?: (opts: unknown) => Promise<unknown> }
-    if (api.promptAsync) {
-      await api.promptAsync({
+    const api = client.session as unknown as { prompt?: (opts: unknown) => Promise<unknown> }
+    if (api.prompt) {
+      await api.prompt({
         path: { id: entry.parentSessionId },
         body: { agent: entry.parentAgent, parts: [{ type: "text", text: notification }] },
       })
