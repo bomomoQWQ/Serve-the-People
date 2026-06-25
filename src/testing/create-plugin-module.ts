@@ -2,7 +2,7 @@ import type { PluginModule, Plugin, Hooks } from "@opencode-ai/plugin"
 import { createBuiltinAgents } from "../agents/builtin"
 import { loadPluginConfig, ensureDefaultConfig } from "../plugin-config"
 import { createBuiltinMcps } from "../mcp"
-import { createTools } from "../create-tools"
+import { createTools, getTaskManager } from "../create-tools"
 import { createHooks } from "../create-hooks"
 import { createManagers } from "../create-managers"
 import { createPluginInterface } from "../plugin-interface"
@@ -67,6 +67,7 @@ export function createPluginModule(): PluginModule {
       tools,
       builtinAgents,
       idleWake,
+      getTaskManager(),
     )
 
     // 国家监委: heartbeat monitoring, stall detection, retry, escalation

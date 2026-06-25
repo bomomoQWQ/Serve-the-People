@@ -172,6 +172,28 @@ export class TaskManager {
   }
 
   getTask(sessionId: string): TaskResult | undefined { return this.tasks.get(sessionId) }
+
+  /** Try to capture session output and mark task complete. Call on idle event. */
+  async tryComplete(sessionId: string): Promise<void> {
+    const task = this.tasks.get(sessionId)
+    if (!task || task.status !== "running") return
+    if (!this.client.session?.messages) return
+    try {
+      const msgResult = await this.client.session.messages({ path: { id: sessionId } })
+      const msgs = msgResult.data
+      if (!msgs) return
+      for (let j = msgs.length - 1; j >= 0; j--) {
+        if (msgs[j].info?.role === "assistant") {
+          task.output = (msgs[j].parts ?? [])
+            .filter((p) => p.type === "text")
+            .map((p) => p.text ?? "")
+            .join("\n") || "(no text output)"
+          task.status = "completed"
+          return
+        }
+      }
+    } catch { /* best effort */ }
+  }
   cancel(taskId: string): boolean {
     const task = this.tasks.get(taskId)
     if (!task || task.status === "completed") return false

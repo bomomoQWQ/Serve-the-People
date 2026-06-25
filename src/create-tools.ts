@@ -17,15 +17,23 @@ import { createSkillTool } from "./tools/skill"
 import { createSkillMcpTool } from "./tools/skill-mcp"
 import { TaskManager } from "./tools/delegate-task/task-manager"
 
+let _taskManager: TaskManager | undefined
+
+/** Get the shared TaskManager after createTools() has been called. */
+export function getTaskManager(): TaskManager | undefined {
+  return _taskManager
+}
+
 /**
  * Tool registry factory.
  * Creates all built-in tools for the Serve the People plugin.
  */
 export function createTools(ctx: PluginInput): Record<string, ToolDefinition> {
+  _taskManager = new TaskManager(ctx.client)
   const tools: Record<string, ToolDefinition> = {}
 
   // Shared TaskManager for delegate-task and background-task tools
-  const taskManager = new TaskManager(ctx.client)
+  const taskManager = _taskManager
 
   // Search tools
   Object.assign(tools, createGrepTools())

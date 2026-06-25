@@ -1,8 +1,10 @@
 /**
  * Background task notification — pushes via promptAsync first,
  * falls back to pending map (injected by next chat.message).
+ * When idle event fires for a sub-session, captures its output via tryComplete.
  */
 import type { PluginInput } from "@opencode-ai/plugin"
+import type { TaskManager } from "../tools/delegate-task/task-manager"
 
 interface BackgroundEntry {
   sessionId: string
@@ -21,9 +23,13 @@ export function registerBackgroundTask(entry: BackgroundEntry): void {
 export async function handleBackgroundTaskIdle(
   client: PluginInput["client"],
   sessionId: string,
+  manager?: TaskManager,
 ): Promise<void> {
   const entry = registry.get(sessionId)
   if (!entry) return
+
+  // Try to capture sub-session output before cleaning up
+  if (manager) await manager.tryComplete(sessionId)
 
   registry.delete(sessionId)
 
@@ -35,13 +41,13 @@ ${entry.agent}的同志已完成任务。
 请用 \`stp_background_output(task_id="${entry.sessionId}")\` 收取报告。
 </system-reminder>`
 
-  // Wait for parent session to settle, then push notification
+  // Wait for parent session to settle, then try push
   await new Promise(r => setTimeout(r, 2000))
 
   try {
-    const api = client.session as unknown as { prompt?: (opts: unknown) => Promise<unknown> }
-    if (api.prompt) {
-      await api.prompt({
+    const api = client.session as unknown as { promptAsync?: (opts: unknown) => Promise<unknown> }
+    if (api.promptAsync) {
+      await api.promptAsync({
         path: { id: entry.parentSessionId },
         body: { agent: entry.parentAgent, parts: [{ type: "text", text: notification }] },
       })

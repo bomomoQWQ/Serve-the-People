@@ -2,6 +2,7 @@ import type { Hooks, PluginInput, ToolDefinition } from "@opencode-ai/plugin"
 import type { AgentConfig } from "@opencode-ai/sdk"
 import type { ServeThePeopleConfig } from "./config"
 import type { BuiltinMcpConfig } from "./mcp/types"
+import type { TaskManager } from "./tools/delegate-task/task-manager"
 import { processUserMessage } from "./features/pipeline/coordinator"
 import { createWorkgroupMailboxInjector, type MailboxInjectorHook } from "./hooks/workgroup-mailbox-injector"
 import { handleBackgroundTaskIdle, injectPendingNotifications } from "./hooks/background-notify"
@@ -22,6 +23,7 @@ export function createPluginInterface(
   tools: Record<string, ToolDefinition>,
   builtinAgents: Record<string, AgentConfig>,
   workgroupIdleWake?: WorkgroupIdleWakeFn,
+  taskManager?: TaskManager,
 ): Omit<Hooks, "experimental.session.compacting" | "experimental.compaction.autocontinue"> {
   // Mailbox injector hook
   const mailboxInjector = createWorkgroupMailboxInjector()
@@ -67,7 +69,7 @@ export function createPluginInterface(
           ?? (props?.id as string)
         if (sessionId) {
           workgroupIdleWake?.(sessionId).catch(() => {})
-          handleBackgroundTaskIdle(ctx.client, sessionId)
+          handleBackgroundTaskIdle(ctx.client, sessionId, taskManager)
         }
       }
     },
